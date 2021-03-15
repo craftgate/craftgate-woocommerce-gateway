@@ -1,0 +1,6 @@
+{
+    "name": "craftgate/woocommerce-gateway-craftgate",
+    "require": {
+        "craftgate/craftgate": "^1.0.1"
+    }
+}
