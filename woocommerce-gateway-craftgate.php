@@ -7,6 +7,9 @@
  * Author URI: https://craftgate.io
  * Version: 1.0.0
  */
+
+if (!defined( 'ABSPATH' ) ) exit;
+
 require_once 'vendor/autoload.php';
 include_once 'craftgate-client.php';
 
