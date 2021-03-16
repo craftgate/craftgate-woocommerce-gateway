@@ -37,7 +37,7 @@ function init_woocommerce_craftgate_gateway()
         public function __construct()
         {
             $this->id = 'craftgate_gateway';
-            $this->icon = plugins_url('images/card-brands.png', __FILE__);
+            $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
             $this->method_title = 'Craftgate Gateway';
             $this->method_description = 'Craftgate Payment Gateway';
@@ -369,7 +369,7 @@ function init_woocommerce_craftgate_gateway()
 
 function custom_style_sheet()
 {
-    wp_enqueue_style('custom-styling', plugin_dir_url(__FILE__) . '/css/style.css');
+    wp_enqueue_style('custom-styling', plugin_dir_url(__FILE__) . '/assets/css/style.css');
 }
 
 add_action('wp_enqueue_scripts', 'custom_style_sheet');

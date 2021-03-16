@@ -1,6 +1,9 @@
 {
-    "name": "craftgate/woocommerce-gateway-craftgate",
-    "require": {
-        "craftgate/craftgate": "^1.0.1"
-    }
+  "name": "craftgate/woocommerce-gateway-craftgate",
+  "description": "Pay with debit/credit card using Craftgate Payment Gateway for WooCommerce",
+  "homepage": "https://craftgate.io",
+  "license": "GPL-2.0",
+  "require": {
+    "craftgate/craftgate": "^1.0.1"
+  }
 }
