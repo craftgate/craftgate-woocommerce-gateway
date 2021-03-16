@@ -66,7 +66,7 @@ function init_woocommerce_craftgate_gateway()
             }
             $this->api_key = $this->get_option($api_key_option_name);
             $this->secret_key = $this->get_option($secret_key_option_name);
-            $this->craftgate_client = new CraftgateClient($this->api_key, $this->secret_key, $api_url);
+            $this->craftgate_client = new Craftgate_Client($this->api_key, $this->secret_key, $api_url);
         }
 
         private function define_woocommerce_actions()

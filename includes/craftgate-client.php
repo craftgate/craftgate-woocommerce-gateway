@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 
 use Craftgate\Craftgate;
 
-class CraftgateClient
+class Craftgate_Client
 {
     private $craftgate;
 
