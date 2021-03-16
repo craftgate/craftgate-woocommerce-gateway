@@ -1,10 +1,10 @@
 <?php
 
-use Craftgate\Craftgate;
-
 require_once 'vendor/autoload.php';
 
-class Craftgate_Client
+use Craftgate\Craftgate;
+
+class CraftgateClient
 {
     private $craftgate;
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Plugin Name: Woocommerce Gateway Craftgate
  * Plugin URI: https://craftgate.io
@@ -8,10 +9,10 @@
  * Version: 1.0.0
  */
 
-if (!defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) exit;
 
 require_once 'vendor/autoload.php';
-include_once 'craftgate-client.php';
+include_once 'includes/craftgate-client.php';
 
 use Craftgate\Model\Currency;
 use Craftgate\Model\PaymentGroup;
@@ -20,7 +21,6 @@ add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
 
 function init_woocommerce_craftgate_gateway()
 {
-
     if (!class_exists('WC_Payment_Gateway')) return;
 
     if (version_compare(phpversion(), '7.1', '>=')) {
@@ -29,7 +29,6 @@ function init_woocommerce_craftgate_gateway()
 
     class WC_Craftgate_Gateway extends WC_Payment_Gateway
     {
-
         private $api_key;
         private $secret_key;
         private $craftgate_client;
@@ -51,7 +50,6 @@ function init_woocommerce_craftgate_gateway()
 
             $this->init_craftgate_client();
             $this->define_woocommerce_actions();
-
         }
 
         private function init_craftgate_client()
@@ -60,6 +58,7 @@ function init_woocommerce_craftgate_gateway()
             $api_key_option_name = 'live_api_key';
             $secret_key_option_name = 'live_secret_key';
             $api_url = 'https://api.craftgate.io';
+
             if ($is_sandbox_active) {
                 $api_key_option_name = 'sandbox_api_key';
                 $secret_key_option_name = 'sandbox_secret_key';
@@ -67,7 +66,7 @@ function init_woocommerce_craftgate_gateway()
             }
             $this->api_key = $this->get_option($api_key_option_name);
             $this->secret_key = $this->get_option($secret_key_option_name);
-            $this->craftgate_client = new Craftgate_Client($this->api_key, $this->secret_key, $api_url);
+            $this->craftgate_client = new CraftgateClient($this->api_key, $this->secret_key, $api_url);
         }
 
         private function define_woocommerce_actions()
@@ -78,12 +77,12 @@ function init_woocommerce_craftgate_gateway()
             add_action('woocommerce_before_thankyou', array($this, 'show_payment_error'));
         }
 
-
         public function init_craftgate_checkout_form($order_id = null)
         {
             try {
                 $request = $this->build_init_checkout_form_request($order_id);
                 $response = $this->craftgate_client->init_checkout_form($request);
+
                 if (isset($response->pageUrl)) {
                     echo
                         '<div id="craftgate_payment_form">
@@ -118,6 +117,7 @@ function init_woocommerce_craftgate_gateway()
                     $order->update_status('failed', $checkout_form_result->paymentError->errorDescription);
                     $order->save();
                 }
+
                 wc_empty_cart();
                 echo "<script>window.top.location.href = '" . $this->get_return_url($order) . "';</script>";
                 exit;
@@ -134,6 +134,7 @@ function init_woocommerce_craftgate_gateway()
 
             $message = "";
             $craftgate_error = $order->get_meta('craftgate_payment_error');
+
             if (isset($craftgate_error)) {
                 $craftgate_error_json = json_decode($craftgate_error);
                 $message = !empty($craftgate_error_json->errorDescription) ? $craftgate_error_json->errorDescription : $craftgate_error_json->errorGroup;
@@ -196,17 +197,15 @@ function init_woocommerce_craftgate_gateway()
             );
         }
 
-
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array('TRY'));
+            return in_array(get_woocommerce_currency(), array(Currency::TL));
         }
 
         private function retrieve_order($order_id)
         {
             return wc_get_order($order_id);
         }
-
 
         private function validate_handle_checkout_form_result_params()
         {
@@ -339,7 +338,6 @@ function init_woocommerce_craftgate_gateway()
 
     add_filter('plugin_action_links', 'craftgate_plugin_action_links', 10, 2);
 
-
     function show_admin_panel_notice()
     {
         $craftgate_settings = get_option('woocommerce_craftgate_gateway_settings');
@@ -350,6 +348,7 @@ function init_woocommerce_craftgate_gateway()
         $live_secret_key = $craftgate_settings['live_secret_key'];
         $api_key = $is_sandbox_active ? $sandbox_api_key : $live_api_key;
         $secret_key = $is_sandbox_active ? $sandbox_secret_key : $live_secret_key;
+
         if ($is_sandbox_active) {
             ?>
             <div class="error">

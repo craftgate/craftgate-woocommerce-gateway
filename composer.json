@@ -4,6 +4,7 @@
   "homepage": "https://craftgate.io",
   "license": "GPL-2.0",
   "require": {
-    "craftgate/craftgate": "^1.0.1"
+    "craftgate/craftgate": "^1.0.1",
+    "ext-json": "*"
   }
 }
