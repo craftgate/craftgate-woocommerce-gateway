@@ -1,16 +1,15 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-require_once 'vendor/autoload.php';
-
-use Craftgate\Craftgate;
-
-class Craftgate_Client
+class WC_Craftgate_API
 {
     private $craftgate;
 
     public function __construct($api_key, $secret_key, $api_url)
     {
-        $this->craftgate = new Craftgate(array(
+        $this->craftgate = new \Craftgate\Craftgate(array(
             'apiKey' => $api_key,
             'secretKey' => $secret_key,
             'baseUrl' => $api_url,
@@ -20,16 +19,16 @@ class Craftgate_Client
     public function init_checkout_form($request)
     {
         $response = $this->craftgate->payment()->initCheckoutPayment($request);
-        return $this->buildResponse($response);
+        return $this->build_response($response);
     }
 
     public function retrieve_checkout_form_result($token)
     {
         $response = $this->craftgate->payment()->retrieveCheckoutPayment($token);
-        return $this->buildResponse($response);
+        return $this->build_response($response);
     }
 
-    private function buildResponse($response)
+    private function build_response($response)
     {
         $response_json = json_decode($response);
         if (isset($response_json->data)) {

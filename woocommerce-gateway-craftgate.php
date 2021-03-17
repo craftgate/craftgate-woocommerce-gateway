@@ -9,13 +9,12 @@
  * Text Domain: woocommerce-gateway-craftgate
  */
 
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 require_once 'vendor/autoload.php';
-include_once 'includes/craftgate-client.php';
-
-use Craftgate\Model\Currency;
-use Craftgate\Model\PaymentGroup;
+include_once 'includes/class-wc-craftgate-api.php';
 
 add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
 
@@ -31,7 +30,7 @@ function init_woocommerce_craftgate_gateway()
     {
         private $api_key;
         private $secret_key;
-        private $craftgate_client;
+        private $craftgate_api;
 
         public function __construct()
         {
@@ -48,11 +47,11 @@ function init_woocommerce_craftgate_gateway()
             $this->title = $this->get_option('title');
             $this->description = $this->get_option('description');
 
-            $this->init_craftgate_client();
+            $this->init_craftgate_api();
             $this->define_woocommerce_actions();
         }
 
-        private function init_craftgate_client()
+        private function init_craftgate_api()
         {
             $is_sandbox_active = $this->get_option('is_sandbox_active') === 'yes';
             $api_key_option_name = 'live_api_key';
@@ -66,7 +65,7 @@ function init_woocommerce_craftgate_gateway()
             }
             $this->api_key = $this->get_option($api_key_option_name);
             $this->secret_key = $this->get_option($secret_key_option_name);
-            $this->craftgate_client = new Craftgate_Client($this->api_key, $this->secret_key, $api_url);
+            $this->craftgate_api = new WC_Craftgate_API($this->api_key, $this->secret_key, $api_url);
         }
 
         private function define_woocommerce_actions()
@@ -81,7 +80,7 @@ function init_woocommerce_craftgate_gateway()
         {
             try {
                 $request = $this->build_init_checkout_form_request($order_id);
-                $response = $this->craftgate_client->init_checkout_form($request);
+                $response = $this->craftgate_api->init_checkout_form($request);
 
                 if (isset($response->pageUrl)) {
                     echo
@@ -105,7 +104,7 @@ function init_woocommerce_craftgate_gateway()
                 $order_id = $_GET["order_id"];
                 $order = $this->retrieve_order($order_id);
 
-                $checkout_form_result = $this->craftgate_client->retrieve_checkout_form_result($_POST["token"]);
+                $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result($_POST["token"]);
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
                 $this->update_order_checkout_form_token($order);
@@ -189,8 +188,8 @@ function init_woocommerce_craftgate_gateway()
             return array(
                 'price' => $this->format_price($order->get_total()),
                 'paidPrice' => $this->format_price($order->get_total()),
-                'currency' => Currency::TL,
-                'paymentGroup' => PaymentGroup::LISTING_OR_SUBSCRIPTION,
+                'currency' => \Craftgate\Model\Currency::TL,
+                'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
                 'callbackUrl' => get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'items' => $this->build_items($order)
