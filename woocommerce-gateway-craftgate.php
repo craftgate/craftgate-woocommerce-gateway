@@ -1,12 +1,12 @@
 <?php
-
-/*
- * Plugin Name: Woocommerce Gateway Craftgate
- * Plugin URI: https://craftgate.io
- * Description: Craftgate
+/**
+ * Plugin Name: Woocommerce Craftgate Gateway
+ * Plugin URI: https://wordpress.org/plugins/woocommerce-gateway-craftgate/
+ * Description: Take debit/credit card payments easily and directly on your store using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io
  * Version: 1.0.0
+ * Text Domain: woocommerce-gateway-craftgate
  */
 
 if (!defined('ABSPATH')) exit;
