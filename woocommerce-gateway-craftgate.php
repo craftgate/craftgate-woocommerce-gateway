@@ -128,10 +128,7 @@ function init_woocommerce_craftgate_gateway()
                 $response = $this->craftgate_api->init_checkout_form($request);
 
                 if (isset($response->pageUrl)) {
-                    echo
-                        '<div id="craftgate_payment_form">
-					                       <iframe src="' . $response->pageUrl . '&iframe=true"></iframe>
-					                   </div>';
+                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true"></iframe></div>';
                 } else {
                     error_log(json_encode($response));
                     $this->render_error_message("Beklenmedik bir hata meydana geldi. ErrorCode: " . $response->errors->errorCode);
@@ -393,27 +390,27 @@ function init_woocommerce_craftgate_gateway()
                     'default' => 'Kredi ve Banka Kartı kullanarak ödeme yapabilirsiniz.'
                 ),
                 'live_api_key' => array(
-                    'title' => 'Api Key',
+                    'title' => 'Live API Key',
                     'type' => 'text',
-                    'description' => 'Enter your API Live Key here.',
+                    'description' => 'Enter your Live API Key here.',
                     'default' => ''
                 ),
                 'live_secret_key' => array(
-                    'title' => 'Secret Key',
+                    'title' => 'Live Secret Key',
                     'type' => 'text',
-                    'description' => 'Enter your Secret Live Key here.',
+                    'description' => 'Enter your Live Secret Key here.',
                     'default' => ''
                 ),
                 'sandbox_api_key' => array(
-                    'title' => 'Api Key [Sandbox]',
+                    'title' => 'Sandbox Api Key',
                     'type' => 'text',
-                    'description' => 'Enter your API Key here.',
+                    'description' => 'Enter your Sandbox API Key here.',
                     'default' => ''
                 ),
                 'sandbox_secret_key' => array(
-                    'title' => 'Secret Key [Sandbox]',
+                    'title' => 'Sandbox Secret Key',
                     'type' => 'text',
-                    'description' => 'Enter your Secret Key here.',
+                    'description' => 'Enter your Sandbox Secret Key here.',
                     'default' => ''
                 ),
                 'testing' => array(
