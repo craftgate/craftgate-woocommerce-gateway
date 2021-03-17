@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Woocommerce Craftgate Gateway
+ * Plugin Name: Woocommerce Craftgate Payment Gateway
  * Plugin URI: https://wordpress.org/plugins/woocommerce-gateway-craftgate/
  * Description: Take debit/credit card payments easily and directly on your store using Craftgate.
  * Author: Craftgate
@@ -18,22 +18,52 @@ include_once 'includes/class-wc-craftgate-api.php';
 
 add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
 
+/**
+ * Initializes WooCommerce Craftgate payment gateway
+ */
 function init_woocommerce_craftgate_gateway()
 {
-    if (!class_exists('WC_Payment_Gateway')) return;
+    if (!class_exists('WC_Payment_Gateway')) {
+        return;
+    }
 
+    // Checks PHP 7.1 for price formatters.
     if (version_compare(phpversion(), '7.1', '>=')) {
         ini_set('serialize_precision', -1);
     }
 
+    /**
+     * WC_Craftgate_Gateway class.
+     */
     class WC_Craftgate_Gateway extends WC_Payment_Gateway
     {
+        /**
+         * Unique identifier of the merchant.
+         *
+         * @var string API Key
+         */
         private $api_key;
+
+        /**
+         * Security credential of the merchant's API request.
+         *
+         * @var string Secret Key
+         */
         private $secret_key;
+
+        /**
+         * Abstraction between Craftgate API and client adapters.
+         *
+         * @var WC_Craftgate_API API abstraction
+         */
         private $craftgate_api;
 
+        /**
+         * WC_Craftgate_Gateway constructor.
+         */
         public function __construct()
         {
+            // Get setting values.
             $this->id = 'craftgate_gateway';
             $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
@@ -41,16 +71,21 @@ function init_woocommerce_craftgate_gateway()
             $this->method_description = 'Craftgate Payment Gateway';
             $this->order_button_text = 'Banka/Kredi Kartı ile Öde';
 
+            // init admin field and settings.
             $this->init_admin_settings_form_fields();
             $this->init_settings();
 
             $this->title = $this->get_option('title');
             $this->description = $this->get_option('description');
 
+            // init api fields
             $this->init_craftgate_api();
             $this->define_woocommerce_actions();
         }
 
+        /**
+         * Initializes Craftgate API fields.
+         */
         private function init_craftgate_api()
         {
             $is_sandbox_active = $this->get_option('is_sandbox_active') === 'yes';
@@ -58,16 +93,21 @@ function init_woocommerce_craftgate_gateway()
             $secret_key_option_name = 'live_secret_key';
             $api_url = 'https://api.craftgate.io';
 
+            // Assigns sandbox properties.
             if ($is_sandbox_active) {
                 $api_key_option_name = 'sandbox_api_key';
                 $secret_key_option_name = 'sandbox_secret_key';
                 $api_url = 'https://sandbox-api.craftgate.io';
             }
+
             $this->api_key = $this->get_option($api_key_option_name);
             $this->secret_key = $this->get_option($secret_key_option_name);
             $this->craftgate_api = new WC_Craftgate_API($this->api_key, $this->secret_key, $api_url);
         }
 
+        /**
+         * Adds woocommerce actions.
+         */
         private function define_woocommerce_actions()
         {
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -76,6 +116,11 @@ function init_woocommerce_craftgate_gateway()
             add_action('woocommerce_before_thankyou', array($this, 'show_payment_error'));
         }
 
+        /**
+         * Initializes Craftgate checkout form.
+         *
+         * @param null $order_id string Order id
+         */
         public function init_craftgate_checkout_form($order_id = null)
         {
             try {
@@ -97,6 +142,9 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
+        /**
+         * Handles Craftgate checkout result.
+         */
         public function handle_craftgate_checkout_form_result()
         {
             try {
@@ -109,6 +157,7 @@ function init_woocommerce_craftgate_gateway()
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
                 $this->update_order_checkout_form_token($order);
 
+                // Checks payment error
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
                     $order->payment_complete();
                 } else {
@@ -126,6 +175,11 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
+        /**
+         * Shows payment error in payment result page.
+         *
+         * @param $order_id string Order id
+         */
         public function show_payment_error($order_id)
         {
             $order = $this->retrieve_order($order_id);
@@ -145,11 +199,22 @@ function init_woocommerce_craftgate_gateway()
             <?php
         }
 
+        /**
+         * Checks if API request is valid.
+         *
+         * @return bool Whether available or not
+         */
         public function is_available()
         {
             return $this->is_current_currency_supported() && $this->enabled == "yes" && $this->api_key && $this->secret_key;
         }
 
+        /**
+         * Retrieves order and prepares checkout data.
+         *
+         * @param $order_id string Order id
+         * @return array Result
+         */
         public function process_payment($order_id)
         {
             $order = wc_get_order($order_id);
@@ -159,11 +224,22 @@ function init_woocommerce_craftgate_gateway()
             );
         }
 
+        /**
+         * Renders error message.
+         *
+         * @param $message string Message
+         */
         private function render_error_message($message)
         {
             echo "<div class='craftgate-alert'>$message</div>";
         }
 
+        /**
+         * Builds payment items.
+         *
+         * @param $order object WooCommerce Order
+         * @return array Items
+         */
         private function build_items($order)
         {
             $order_items = $order->get_items();
@@ -181,6 +257,12 @@ function init_woocommerce_craftgate_gateway()
             return $items;
         }
 
+        /**
+         * Build initialize checkout form request.
+         *
+         * @param $order_id string Order id
+         * @return array Checkout form request
+         */
         private function build_init_checkout_form_request($order_id)
         {
             $order = $this->retrieve_order($order_id);
@@ -196,16 +278,29 @@ function init_woocommerce_craftgate_gateway()
             );
         }
 
+        /**
+         * Checks if TRY currency is processed.
+         *
+         * @return bool Whether currency is supported or not
+         */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(Currency::TL));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL));
         }
 
+        /**
+         * Retrieves order.
+         *
+         * @param $order_id string Order id
+         */
         private function retrieve_order($order_id)
         {
             return wc_get_order($order_id);
         }
 
+        /**
+         * Validates checkout form result parameters.
+         */
         private function validate_handle_checkout_form_result_params()
         {
             if (!isset($_GET["order_id"]) || !isset($_POST["token"])) {
@@ -213,6 +308,12 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
+        /**
+         * Validates if order id is equals to conversation id.
+         *
+         * @param $checkout_form_result array Result
+         * @param $order_id string Order id
+         */
         private function validate_order_id_equals_conversation_id($checkout_form_result, $order_id)
         {
             if (!isset($checkout_form_result->conversationId) || $checkout_form_result->conversationId != $order_id) {
@@ -220,17 +321,31 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
+        /**
+         * Adds checkout form result json to metadata.
+         *
+         * @param $order object WooCommerce order
+         */
         private function update_order_checkout_form_token($order)
         {
             $order->update_meta_data('craftgate_checkout_form_callback_params', json_encode($_POST));
             $order->save();
         }
 
+        /**
+         * Formats price.
+         *
+         * @param $number float Price
+         * @return float Formatted Price
+         */
         private function format_price($number)
         {
             return round($number, 2);
         }
 
+        /**
+         * Builds admin options.
+         */
         public function admin_options()
         {
             echo '<h3>Craftgate Payment Gateway</h3>';
@@ -250,6 +365,9 @@ function init_woocommerce_craftgate_gateway()
             <?php }
         }
 
+        /**
+         * Initializes admin settings.
+         */
         public function init_admin_settings_form_fields()
         {
             $this->form_fields = array(
@@ -314,6 +432,12 @@ function init_woocommerce_craftgate_gateway()
         }
     }
 
+    /**
+     * WooCommerce actions.
+     *
+     * @param $methods
+     * @return mixed
+     */
     function add_craftgate_gateway_to_wc_methods($methods)
     {
         $methods[] = 'WC_Craftgate_Gateway';
@@ -322,6 +446,13 @@ function init_woocommerce_craftgate_gateway()
 
     add_filter('woocommerce_payment_gateways', 'add_craftgate_gateway_to_wc_methods');
 
+    /**
+     * WooCommerce actions for links.
+     *
+     * @param $links
+     * @param $file
+     * @return mixed
+     */
     function craftgate_plugin_action_links($links, $file)
     {
         static $this_plugin;
@@ -337,6 +468,9 @@ function init_woocommerce_craftgate_gateway()
 
     add_filter('plugin_action_links', 'craftgate_plugin_action_links', 10, 2);
 
+    /**
+     * WooCommerce admin notices.
+     */
     function show_admin_panel_notice()
     {
         $craftgate_settings = get_option('woocommerce_craftgate_gateway_settings');
@@ -365,6 +499,9 @@ function init_woocommerce_craftgate_gateway()
     add_action('admin_notices', 'show_admin_panel_notice');
 }
 
+/**
+ * Adds custom CSS files.
+ */
 function custom_style_sheet()
 {
     wp_enqueue_style('custom-styling', plugin_dir_url(__FILE__) . '/assets/css/style.css');
