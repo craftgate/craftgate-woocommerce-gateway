@@ -80,8 +80,8 @@ function init_woocommerce_craftgate_gateway()
             $this->id = 'craftgate_gateway';
             $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
-            $this->method_title = 'Craftgate Gateway';
-            $this->method_description = 'Craftgate Payment Gateway';
+            $this->method_title = 'Craftgate Payment Gateway';
+            $this->method_description = 'Take debit/credit card payments easily and directly on your WordPress site using Craftgate.';
             $this->order_button_text = 'Banka/Kredi Kartı ile Öde';
 
             // Inits admin field and settings.
@@ -144,11 +144,11 @@ function init_woocommerce_craftgate_gateway()
                     echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true"></iframe></div>';
                 } else {
                     error_log(json_encode($response));
-                    $this->render_error_message("Beklenmedik bir hata meydana geldi. ErrorCode: " . $response->errors->errorCode);
+                    $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: " . $response->errors->errorCode);
                 }
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                $this->render_error_message("Beklenmedik bir hata meydana geldi.");
+                $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: -1");
             }
         }
 
@@ -181,7 +181,7 @@ function init_woocommerce_craftgate_gateway()
                 exit;
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                $this->render_error_message("Beklenmedik bir hata meydana geldi");
+                $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: -2");
             }
         }
 
@@ -392,9 +392,8 @@ function init_woocommerce_craftgate_gateway()
                 'enabled' => array(
                     'title' => 'Enable/Disable',
                     'type' => 'checkbox',
-                    'label' => 'Enable Craftgate Payment Gateway',
+                    'label' => 'Enable Craftgate',
                     'description' => 'Enable or disable the gateway.',
-                    'desc_tip' => true,
                     'default' => 'yes'
                 ),
                 'title' => array(
@@ -408,30 +407,30 @@ function init_woocommerce_craftgate_gateway()
                     'title' => 'Description',
                     'type' => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default' => 'Kredi ve Banka Kartı kullanarak ödeme yapabilirsiniz.'
+                    'default' => 'Banka kartı ve kredi kartı kullanarak ödeme yapabilirsiniz.'
                 ),
                 'live_api_key' => array(
                     'title' => 'Live API Key',
                     'type' => 'text',
-                    'description' => 'Enter your Live API Key here.',
+                    'description' => 'Enter your Live API Key.',
                     'default' => ''
                 ),
                 'live_secret_key' => array(
                     'title' => 'Live Secret Key',
                     'type' => 'text',
-                    'description' => 'Enter your Live Secret Key here.',
+                    'description' => 'Enter your Live Secret Key.',
                     'default' => ''
                 ),
                 'sandbox_api_key' => array(
-                    'title' => 'Sandbox Api Key',
+                    'title' => 'Sandbox API Key',
                     'type' => 'text',
-                    'description' => 'Enter your Sandbox API Key here.',
+                    'description' => 'Enter your Sandbox API Key.',
                     'default' => ''
                 ),
                 'sandbox_secret_key' => array(
                     'title' => 'Sandbox Secret Key',
                     'type' => 'text',
-                    'description' => 'Enter your Sandbox Secret Key here.',
+                    'description' => 'Enter your Sandbox Secret Key.',
                     'default' => ''
                 ),
                 'testing' => array(
@@ -444,7 +443,7 @@ function init_woocommerce_craftgate_gateway()
                     'type' => 'checkbox',
                     'label' => 'Enable Sandbox Mode',
                     'default' => 'no',
-                    'description' => 'Enable test mode.',
+                    'description' => 'Enable test mode using sandbox API keys.',
                 )
             );
         }
@@ -458,12 +457,18 @@ function init_woocommerce_craftgate_gateway()
     function show_craftgate_payment_url($order)
     {
         $meta = $order->get_meta('craftgate_payment_info');
-        if (empty($meta)) return;
+        if (empty($meta)) {
+            return;
+        }
+
         $craftgate_payment_info = json_decode($meta);
         $url = 'https://panel.craftgate.io/payments/';
+
+        // Checks if sandbox payment.
         if ($craftgate_payment_info->is_sandbox_payment) {
             $url = 'https://sandbox-panel.craftgate.io/payments/';
         }
+
         $url .= $craftgate_payment_info->payment_id;
         $link = "<a target='_blank' href='$url'>$url</a>";
         echo '<p><strong>' . __('Craftgate Payment URL') . ':</strong> <br/>' . $link . '</p>';
@@ -522,15 +527,6 @@ function init_woocommerce_craftgate_gateway()
         $api_key = $is_sandbox_active ? $sandbox_api_key : $live_api_key;
         $secret_key = $is_sandbox_active ? $sandbox_secret_key : $live_secret_key;
 
-        if ($is_sandbox_active) {
-            ?>
-            <div class="error">
-                <p>Craftgate test modu aktif.
-                    <a href="<?php echo get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=wc-settings&tab=checkout&section=craftgate_gateway">Buradan</a>
-                    Canlı modu aktif edebilirsiniz.</p>
-            </div>
-            <?php
-        }
         if (!($api_key && $secret_key)) {
             echo '<div class="error"><p>' . sprintf('Craftgate Payment Gateway metodu için <a href="%s">buradan</a> API Key ve SECRET Key bilgilerinizi giriniz.', admin_url('admin.php?page=wc-settings&tab=checkout&section=craftgate_gateway')) . '</p></div>';
         }
