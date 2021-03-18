@@ -13,9 +13,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once 'vendor/autoload.php';
-include_once 'includes/class-wc-craftgate-api.php';
-
 add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
 
 /**
@@ -26,6 +23,10 @@ function init_woocommerce_craftgate_gateway()
     if (!class_exists('WC_Payment_Gateway')) {
         return;
     }
+
+    // Requires dependencies.
+    require_once 'includes/lib/craftgate/autoload.php';
+    require_once 'includes/class-wc-craftgate-api.php';
 
     // Checks PHP 7.1 for price formatters.
     if (version_compare(phpversion(), '7.1', '>=')) {
@@ -63,7 +64,7 @@ function init_woocommerce_craftgate_gateway()
          */
         public function __construct()
         {
-            // Get setting values.
+            // Gets setting values.
             $this->id = 'craftgate_gateway';
             $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
@@ -71,14 +72,14 @@ function init_woocommerce_craftgate_gateway()
             $this->method_description = 'Craftgate Payment Gateway';
             $this->order_button_text = 'Banka/Kredi Kartı ile Öde';
 
-            // init admin field and settings.
+            // Inits admin field and settings.
             $this->init_admin_settings_form_fields();
             $this->init_settings();
 
             $this->title = $this->get_option('title');
             $this->description = $this->get_option('description');
 
-            // init api fields
+            // Inits api fields.
             $this->init_craftgate_api();
             $this->define_woocommerce_actions();
         }
@@ -91,13 +92,13 @@ function init_woocommerce_craftgate_gateway()
             $is_sandbox_active = $this->get_option('is_sandbox_active') === 'yes';
             $api_key_option_name = 'live_api_key';
             $secret_key_option_name = 'live_secret_key';
-            $api_url = 'https://api.craftgate.io';
+            $api_url = \Craftgate\CraftgateOptions::API_URL;
 
             // Assigns sandbox properties.
             if ($is_sandbox_active) {
                 $api_key_option_name = 'sandbox_api_key';
                 $secret_key_option_name = 'sandbox_secret_key';
-                $api_url = 'https://sandbox-api.craftgate.io';
+                $api_url = \Craftgate\CraftgateOptions::SANDBOX_API_URL;
             }
 
             $this->api_key = $this->get_option($api_key_option_name);
@@ -154,7 +155,7 @@ function init_woocommerce_craftgate_gateway()
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
                 $this->update_order_checkout_form_token($order);
 
-                // Checks payment error
+                // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
                     $order->payment_complete();
                 } else {
