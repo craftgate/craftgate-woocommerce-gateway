@@ -30,13 +30,16 @@ Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların S
 * Birçok programlama dilini kapsayan, kolay entegre edilebilir API
 * 2007 yılından bu yana bir çok tecrübe ve birikimle geliştirilmiş, ölçeklenebilir, 6. nesil platform
 
+= Gereksinimler =
+Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmektedir.
+
 == Installation ==
 * Craftgate WooCommerce eklentisini indirip Wordpress eklentiler sayfasından yükleyebilirsiniz. Ayrıca Wordpress eklenti arama sayfasına craftgate yazarak da eklentiyi yükleyebilirsiniz.
-* Eklenti yüklendikten sonra Craftgate eklentisini etkinleştiriniz.
+* Eklentiyi yüklendikten sonra Craftgate eklentisini etkinleştiriniz.
 * Ektinleştirdikten sonra Yönet butonuna tıklayarak yönetim sayfasına geliniz.
 * Live API Key ve Live Secret Key girerek canlı ortamdan ödeme alabilirsiniz. Sandbox API Key ve Sandbox Secret Key girerek ise test ortamını kullanarak ödeme alabilirsiniz.
-* Test ortamından ödeme almak için Enable Sandbox Mode seçeneğinin açık olması gerekmektedir. Kapalı olduğu durumda canlı ortamdan ödeme alabilme aktif olacaktır.
-* Detaylı bilgi için https://developer.craftgate.io adresini ziyaret edebilirsiniz.
+* Test ortamından ödeme almak için Enable Sandbox Mode seçeneğinin açık olması gerekmektedir. Kapalı olduğu durumda canlı ortamdan ödeme alma aktif olacaktır.
+* Detaylı bilgi için [developer.craftgate.io](https://developer.craftgate.io) adresini ziyaret edebilirsiniz.
 
 == Changelog ==
 = 1.0.0 - 2021-03-18 =
