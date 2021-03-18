@@ -6,9 +6,9 @@
 **/
 [class="wc_payment_method payment_method_craftgate_gateway"] img {
     float: none !important;
-    margin: 0rem 0 0;
+    margin: 1rem 0 0;
     display: block;
-    max-height: 64px !important;
+    max-height: 32px !important;
 }
 
 .craftgate-alert {
