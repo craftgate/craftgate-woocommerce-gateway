@@ -59,7 +59,7 @@ function init_woocommerce_craftgate_gateway()
 
         /**
          * Information of whether sandbox mode is active.
-         * @var boolean true if sandbox mode is active.
+         * @var boolean true if sandbox mode is active.metodu için
          */
         private $is_sandbox_active;
 
@@ -512,27 +512,6 @@ function init_woocommerce_craftgate_gateway()
     }
 
     add_filter('plugin_action_links', 'craftgate_plugin_action_links', 10, 2);
-
-    /**
-     * WooCommerce admin notices.
-     */
-    function show_admin_panel_notice()
-    {
-        $craftgate_settings = get_option('woocommerce_craftgate_gateway_settings');
-        $is_sandbox_active = $craftgate_settings['is_sandbox_active'] === 'yes';
-        $sandbox_api_key = $craftgate_settings['sandbox_api_key'];
-        $sandbox_secret_key = $craftgate_settings['sandbox_secret_key'];
-        $live_api_key = $craftgate_settings['live_api_key'];
-        $live_secret_key = $craftgate_settings['live_secret_key'];
-        $api_key = $is_sandbox_active ? $sandbox_api_key : $live_api_key;
-        $secret_key = $is_sandbox_active ? $sandbox_secret_key : $live_secret_key;
-
-        if (!($api_key && $secret_key)) {
-            echo '<div class="error"><p>' . sprintf('Craftgate Payment Gateway metodu için <a href="%s">buradan</a> API Key ve SECRET Key bilgilerinizi giriniz.', admin_url('admin.php?page=wc-settings&tab=checkout&section=craftgate_gateway')) . '</p></div>';
-        }
-    }
-
-    add_action('admin_notices', 'show_admin_panel_notice');
 }
 
 /**
