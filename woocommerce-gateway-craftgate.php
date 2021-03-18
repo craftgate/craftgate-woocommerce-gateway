@@ -53,6 +53,13 @@ function init_woocommerce_craftgate_gateway()
         private $secret_key;
 
         /**
+         * Information of whether sandbox mode is active.
+         * @var boolean true if sandbox mode is active.
+         */
+        private $is_sandbox_active;
+
+
+        /**
          * Abstraction between Craftgate API and client adapters.
          *
          * @var WC_Craftgate_API API abstraction
@@ -89,13 +96,13 @@ function init_woocommerce_craftgate_gateway()
          */
         private function init_craftgate_api()
         {
-            $is_sandbox_active = $this->get_option('is_sandbox_active') === 'yes';
+            $this->is_sandbox_active = $this->get_option('is_sandbox_active') === 'yes';
             $api_key_option_name = 'live_api_key';
             $secret_key_option_name = 'live_secret_key';
             $api_url = \Craftgate\CraftgateOptions::API_URL;
 
             // Assigns sandbox properties.
-            if ($is_sandbox_active) {
+            if ($this->is_sandbox_active) {
                 $api_key_option_name = 'sandbox_api_key';
                 $secret_key_option_name = 'sandbox_secret_key';
                 $api_url = \Craftgate\CraftgateOptions::SANDBOX_API_URL;
@@ -153,7 +160,7 @@ function init_woocommerce_craftgate_gateway()
                 $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result($_POST["token"]);
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
-                $this->update_order_checkout_form_token($order);
+                $this->update_order_checkout_form_result_metadata($order,$checkout_form_result);
 
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
@@ -323,10 +330,18 @@ function init_woocommerce_craftgate_gateway()
          * Adds checkout form result json to metadata.
          *
          * @param $order object WooCommerce order
+         * @param $checkout_form_result object Checkout Form result
          */
-        private function update_order_checkout_form_token($order)
+        private function update_order_checkout_form_result_metadata($order, $checkout_form_result)
         {
             $order->update_meta_data('craftgate_checkout_form_callback_params', json_encode($_POST));
+            if (isset($checkout_form_result->id)) {
+                $craftgate_payment_info = array(
+                    'is_sandbox_payment' => $this->is_sandbox_active,
+                    'payment_id' => $checkout_form_result->id,
+                );
+                $order->update_meta_data('craftgate_payment_info', json_encode($craftgate_payment_info));
+            }
             $order->save();
         }
 
@@ -429,6 +444,28 @@ function init_woocommerce_craftgate_gateway()
             );
         }
     }
+
+    /**
+     * Display craftgate payment url on the admin order page
+     * @param $order
+     */
+
+    function show_craftgate_payment_url($order)
+    {
+        $meta = $order->get_meta('craftgate_payment_info');
+        if(empty($meta)) return;
+        $craftgate_payment_info = json_decode($meta);
+        $url = 'https://panel.craftgate.io/payments/';
+        if ($craftgate_payment_info->is_sandbox_payment) {
+            $url = 'https://sandbox-panel.craftgate.io/payments/';
+        }
+        $url .= $craftgate_payment_info->payment_id;
+        $link = "<a target='_blank' href='$url'>$url</a>";
+        echo '<p><strong>' . __('Craftgate Payment URL') . ':</strong> <br/>' . $link . '</p>';
+    }
+
+    add_action('woocommerce_admin_order_data_after_billing_address', 'show_craftgate_payment_url', 10, 1);
+
 
     /**
      * WooCommerce actions.
