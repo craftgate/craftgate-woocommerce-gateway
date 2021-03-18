@@ -545,9 +545,9 @@ function custom_style_sheet()
 
 add_action('wp_enqueue_scripts', 'custom_style_sheet');
 
-function uninstall_plugin()
+function deactivate_craftgate_plugin()
 {
     delete_option('woocommerce_craftgate_gateway_settings');
 }
 
-register_deactivation_hook(__FILE__, 'uninstall_plugin');
+register_deactivation_hook(__FILE__, 'deactivate_craftgate_plugin');
