@@ -1,11 +1,16 @@
 <?php
 /**
- * Plugin Name: Woocommerce Craftgate Payment Gateway
+ * Plugin Name: WooCommerce Craftgate Payment Gateway
  * Plugin URI: https://wordpress.org/plugins/woocommerce-gateway-craftgate/
- * Description: Take debit/credit card payments easily and directly on your store using Craftgate.
+ * Description: Take debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io
  * Version: 1.0.0
+ * Requires at least: 4.7
+ * WC tested up to: 5.7.0
+ * Requires PHP: 5.6
+ * License: GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: woocommerce-gateway-craftgate
  */
 
@@ -160,7 +165,7 @@ function init_woocommerce_craftgate_gateway()
                 $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result($_POST["token"]);
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
-                $this->update_order_checkout_form_result_metadata($order,$checkout_form_result);
+                $this->update_order_checkout_form_result_metadata($order, $checkout_form_result);
 
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
@@ -453,7 +458,7 @@ function init_woocommerce_craftgate_gateway()
     function show_craftgate_payment_url($order)
     {
         $meta = $order->get_meta('craftgate_payment_info');
-        if(empty($meta)) return;
+        if (empty($meta)) return;
         $craftgate_payment_info = json_decode($meta);
         $url = 'https://panel.craftgate.io/payments/';
         if ($craftgate_payment_info->is_sandbox_payment) {

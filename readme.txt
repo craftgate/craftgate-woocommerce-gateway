@@ -1,6 +1,6 @@
 === WooCommerce Craftgate Payment Gateway ===
 Contributors: craftgateio
-Tags: credit card, debit card, payment, checkout, sanal pos, woocommerce, craftgate
+Tags: craftgate, payment gateway, checkout, sanal pos, credit card, debit card, woocommerce
 Requires at least: 4.7
 Tested up to: 5.7.0
 Requires PHP: 5.6
