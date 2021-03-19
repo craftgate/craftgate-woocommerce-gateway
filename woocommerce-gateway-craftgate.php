@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Craftgate Payment Gateway
  * Plugin URI: https://wordpress.org/plugins/woocommerce-gateway-craftgate/
- * Description: Take debit/credit card payments easily and directly on your WordPress site using Craftgate.
+ * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io
  * Version: 1.0.0
@@ -63,7 +63,6 @@ function init_woocommerce_craftgate_gateway()
          */
         private $is_sandbox_active;
 
-
         /**
          * Abstraction between Craftgate API and client adapters.
          *
@@ -81,7 +80,7 @@ function init_woocommerce_craftgate_gateway()
             $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
             $this->method_title = 'Craftgate Payment Gateway';
-            $this->method_description = 'Take debit/credit card payments easily and directly on your WordPress site using Craftgate.';
+            $this->method_description = 'Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.';
             $this->order_button_text = 'Banka/Kredi Kartı ile Öde';
 
             // Inits admin field and settings.
