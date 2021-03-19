@@ -15,7 +15,7 @@ Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların S
 
 = Craftgate ile çalışmaya nasıl başlayabilirim? =
 1. [craftgate.io](https://craftgate.io) sayfamızdan Kayıt Ol butonuna tıklayınız.
-1. Sizden istenilen bilgilerini doldurup, belgeleri yükleyip, online olarak başvurunuz.
+1. Sizden istenilen bilgileri doldurup, belgeleri yükleyip, online olarak başvurunuz.
 1. Gelen dijital sözleşmeyi onaylayın ve Craftgate’i hemen kullanmaya başlayınız.
 
 = Ürün özellikleri =
@@ -26,7 +26,7 @@ Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların S
 * Ödeme formu, ortak ödeme sayfası
 * Akıllı ve Dinamik Ödeme Yönlendirme Kuralları
 * Ödeme Tekrar Deneme
-* Gelişmiş üye işyeri kontrol paneli
+* Gelişmiş Üye İşyeri kontrol paneli
 * Birçok programlama dilini kapsayan, kolay entegre edilebilir API
 * 2007 yılından bu yana bir çok tecrübe ve birikimle geliştirilmiş, ölçeklenebilir, 6. nesil platform
 
@@ -34,7 +34,7 @@ Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların S
 Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmektedir.
 
 == Installation ==
-* Craftgate WooCommerce eklentisini indirip Wordpress eklentiler sayfasından yükleyebilirsiniz. Ayrıca Wordpress eklenti arama sayfasına craftgate yazarak da eklentiyi yükleyebilirsiniz.
+* Craftgate WooCommerce eklentisini indirip Wordpress eklentiler sayfasından yükleyebilirsiniz. Ayrıca Wordpress eklenti arama sayfasına "craftgate" yazarak da eklentiyi yükleyebilirsiniz.
 * Eklentiyi yüklendikten sonra Craftgate eklentisini etkinleştiriniz.
 * Ektinleştirdikten sonra Yönet butonuna tıklayarak yönetim sayfasına geliniz.
 * Live API Key ve Live Secret Key girerek canlı ortamdan ödeme alabilirsiniz. Sandbox API Key ve Sandbox Secret Key girerek ise test ortamını kullanarak ödeme alabilirsiniz.
