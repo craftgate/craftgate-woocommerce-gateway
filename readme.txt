@@ -15,8 +15,8 @@ Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların S
 
 = Craftgate ile çalışmaya nasıl başlayabilirim? =
 1. [craftgate.io](https://craftgate.io) sayfamızdan Kayıt Ol butonuna tıklayınız.
-2. Sizden istenilen bilgileri doldurup, belgeleri yükleyip, online olarak başvurunuz.
-3. Gelen dijital sözleşmeyi onaylayın ve Craftgate’i hemen kullanmaya başlayınız.
+1. Sizden istenilen bilgileri doldurup, belgeleri yükleyip, online olarak başvurunuz.
+1. Gelen dijital sözleşmeyi onaylayın ve Craftgate’i hemen kullanmaya başlayınız.
 
 = Ürün özellikleri =
 * Tüm bankalarla hazır Sanal POS entegrasyonu
