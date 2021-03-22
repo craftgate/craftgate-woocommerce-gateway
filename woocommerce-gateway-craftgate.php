@@ -12,6 +12,7 @@
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: woocommerce-gateway-craftgate
+ * Domain Path: /languages/
  */
 
 if (!defined('ABSPATH')) {
@@ -19,6 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
+
 
 /**
  * Initializes WooCommerce Craftgate payment gateway
@@ -37,6 +39,8 @@ function init_woocommerce_craftgate_gateway()
     if (version_compare(phpversion(), '7.1', '>=')) {
         ini_set('serialize_precision', -1);
     }
+
+    load_plugin_textdomain('woocommerce-gateway-craftgate', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 
     /**
      * WC_Craftgate_Gateway class.
@@ -70,6 +74,8 @@ function init_woocommerce_craftgate_gateway()
          */
         private $craftgate_api;
 
+        private $text_domain = 'woocommerce-gateway-craftgate';
+
         /**
          * WC_Craftgate_Gateway constructor.
          */
@@ -80,8 +86,8 @@ function init_woocommerce_craftgate_gateway()
             $this->icon = plugins_url('assets/images/card-brands.png', __FILE__);
             $this->has_fields = false;
             $this->method_title = 'Craftgate Payment Gateway';
-            $this->method_description = 'Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.';
-            $this->order_button_text = 'Banka/Kredi Kartı ile Öde';
+            $this->method_description = __('Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.', $this->text_domain);
+            $this->order_button_text = __('Pay with Debit/Credit Card', $this->text_domain);
 
             // Inits admin field and settings.
             $this->init_admin_settings_form_fields();
@@ -143,11 +149,11 @@ function init_woocommerce_craftgate_gateway()
                     echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true"></iframe></div>';
                 } else {
                     error_log(json_encode($response));
-                    $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: " . $response->errors->errorCode);
+                    $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . $response->errors->errorCode);
                 }
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: -1");
+                $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . '-1');
             }
         }
 
@@ -180,7 +186,7 @@ function init_woocommerce_craftgate_gateway()
                 exit;
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                $this->render_error_message("Beklenmedik bir hata oluştu. Hata Kodu: -2");
+                $this->render_error_message(__('An error occurred. Error Code: ', $this->text_domain) . '-2');
             }
         }
 
@@ -202,8 +208,10 @@ function init_woocommerce_craftgate_gateway()
                 $message = !empty($craftgate_error_json->errorDescription) ? $craftgate_error_json->errorDescription : $craftgate_error_json->errorGroup;
             } ?>
             <div class="craftgate-alert">
-                Ödemeniz alınamamıştır. <br>
-                <?php echo $message ?>
+                <?php
+                _e('Your payment could not be processed.', $this->text_domain);
+                echo '<br/>';
+                echo $message ?>
             </div>
             <?php
         }
@@ -313,7 +321,7 @@ function init_woocommerce_craftgate_gateway()
         private function validate_handle_checkout_form_result_params()
         {
             if (!isset($_GET["order_id"]) || !isset($_POST["token"])) {
-                throw new Exception("Ödeme tamamlanamadı.");
+                throw new Exception(__('Your payment could not be processed.', $this->text_domain));
             }
         }
 
@@ -326,7 +334,7 @@ function init_woocommerce_craftgate_gateway()
         private function validate_order_id_equals_conversation_id($checkout_form_result, $order_id)
         {
             if (!isset($checkout_form_result->conversationId) || $checkout_form_result->conversationId != $order_id) {
-                throw new Exception("Ödeme tamamlanamadı.");
+                throw new Exception(__('Your payment could not be processed.', $this->text_domain));
             }
         }
 
@@ -372,12 +380,12 @@ function init_woocommerce_craftgate_gateway()
                 echo '</table>';
             } else { ?>
                 <p>
-                    Craftgate Payment Gateway hesabınızı <a href="https://craftgate.io" target="_blank">buradan</a>
-                    oluşturabilirsiniz.
+                    <?php _e('You can create your Craftgate Payment Gateway account <a href="https://craftgate.io" target="_blank"> here</a>.', $this->text_domain) ?>
                 </p>
                 <div class="inline error">
-                    <p><strong>Craftgate Gateway ödeme methodu kullanılamaz</strong>: Sadece Türk lirası
-                        desteklenmektedir.</p>
+                    <p>
+                        <strong><?php _e('Craftgate Payment Gateway is not available to use', $this->text_domain) ?></strong>: <?php _e('The only supported currency is TRY.', $this->text_domain) ?>
+                    </p>
                 </div>
             <?php }
         }
@@ -389,60 +397,55 @@ function init_woocommerce_craftgate_gateway()
         {
             $this->form_fields = array(
                 'enabled' => array(
-                    'title' => 'Enable/Disable',
+                    'title' => __('Enable/Disable', $this->text_domain),
                     'type' => 'checkbox',
-                    'label' => 'Enable Craftgate',
-                    'description' => 'Enable or disable the gateway.',
+                    'label' => __('Enable Craftgate', $this->text_domain),
+                    'description' => __('Enable or disable the gateway.', $this->text_domain),
                     'default' => 'yes'
                 ),
                 'title' => array(
-                    'title' => 'Title',
+                    'title' => __('Title', $this->text_domain),
                     'type' => 'text',
-                    'description' => 'This controls the title which the user sees during checkout.',
+                    'description' => __('This controls the title which the user sees during checkout.', $this->text_domain),
                     'desc_tip' => false,
-                    'default' => 'Banka/Kredi kartı ile öde'
+                    'default' => __('Pay with Debit/Credit Card', $this->text_domain),
                 ),
                 'description' => array(
-                    'title' => 'Description',
+                    'title' => __('Description', $this->text_domain),
                     'type' => 'textarea',
-                    'description' => 'This controls the description which the user sees during checkout.',
-                    'default' => 'Banka kartı ve kredi kartı kullanarak ödeme yapabilirsiniz.'
+                    'description' => __('This controls the description which the user sees during checkout.', $this->text_domain),
+                    'default' => __('You can pay with Debit and Credit Card', $this->text_domain),
                 ),
                 'live_api_key' => array(
-                    'title' => 'Live API Key',
+                    'title' => __('Live API Key', $this->text_domain),
                     'type' => 'text',
-                    'description' => 'Enter your Live API Key.',
+                    'description' => __('Enter your Live API Key.', $this->text_domain),
                     'default' => ''
                 ),
                 'live_secret_key' => array(
-                    'title' => 'Live Secret Key',
+                    'title' => __('Live Secret Key', $this->text_domain),
                     'type' => 'text',
-                    'description' => 'Enter your Live Secret Key.',
+                    'description' => __('Enter your Live Secret Key.', $this->text_domain),
                     'default' => ''
                 ),
                 'sandbox_api_key' => array(
-                    'title' => 'Sandbox API Key',
+                    'title' => __('Sandbox API Key', $this->text_domain),
                     'type' => 'text',
-                    'description' => 'Enter your Sandbox API Key.',
+                    'description' => __('Enter your Sandbox API Key.', $this->text_domain),
                     'default' => ''
                 ),
                 'sandbox_secret_key' => array(
-                    'title' => 'Sandbox Secret Key',
+                    'title' => __('Sandbox Secret Key', $this->text_domain),
                     'type' => 'text',
-                    'description' => 'Enter your Sandbox Secret Key.',
+                    'description' => __('Enter your Sandbox Secret Key.', $this->text_domain),
                     'default' => ''
                 ),
-                'testing' => array(
-                    'title' => 'Gateway Testing',
-                    'type' => 'title',
-                    'description' => '',
-                ),
                 'is_sandbox_active' => array(
-                    'title' => 'Sandbox Mode',
+                    'title' => __('Sandbox Mode', $this->text_domain),
                     'type' => 'checkbox',
-                    'label' => 'Enable Sandbox Mode',
+                    'label' => __('Enable Sandbox Mode', $this->text_domain),
                     'default' => 'no',
-                    'description' => 'Enable test mode using sandbox API keys.',
+                    'description' => __('Enable test mode using sandbox API keys.', $this->text_domain),
                 )
             );
         }
@@ -470,7 +473,7 @@ function init_woocommerce_craftgate_gateway()
 
         $url .= $craftgate_payment_info->payment_id;
         $link = "<a target='_blank' href='$url'>$url</a>";
-        echo '<p><strong>' . __('Craftgate Payment URL') . ':</strong> <br/>' . $link . '</p>';
+        echo '<p><strong>' . __('Craftgate Payment URL','woocommerce-gateway-craftgate') . ':</strong> <br/>' . $link . '</p>';
     }
 
     add_action('woocommerce_admin_order_data_after_billing_address', 'show_craftgate_payment_url', 10, 1);
@@ -504,7 +507,7 @@ function init_woocommerce_craftgate_gateway()
             $this_plugin = plugin_basename(__FILE__);
         }
         if ($file == $this_plugin) {
-            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wc-settings&tab=checkout&section=craftgate_gateway">Settings</a>';
+            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wc-settings&tab=checkout&section=craftgate_gateway">' . __('Settings', 'woocommerce-gateway-craftgate') . '</a>';
             array_unshift($links, $settings_link);
         }
         return $links;

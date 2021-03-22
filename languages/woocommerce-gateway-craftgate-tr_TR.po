@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-03-22 16:31+0300\n"
+"PO-Revision-Date: 2021-03-22 16:56+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"X-Poedit-Basepath: ../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _;__;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: includes\n"
+
+#: woocommerce-gateway-craftgate.php:89
+msgid ""
+"Accept debit/credit card payments easily and directly on your WordPress site "
+"using Craftgate."
+msgstr ""
+"Craftgate ile WordPress siteniz üzerinden kolay ve doğrudan banka/kredi "
+"kartı ile ödeme alın."
+
+#: woocommerce-gateway-craftgate.php:90 woocommerce-gateway-craftgate.php:411
+msgid "Pay with Debit/Credit Card"
+msgstr "Banka/Kredi Kartı ile Öde"
+
+#: woocommerce-gateway-craftgate.php:152 woocommerce-gateway-craftgate.php:156
+#: woocommerce-gateway-craftgate.php:189
+msgid "An error occurred. Error Code: "
+msgstr "Bir hata meydana geldi. Hata Kodu: "
+
+#: woocommerce-gateway-craftgate.php:212 woocommerce-gateway-craftgate.php:324
+#: woocommerce-gateway-craftgate.php:337
+msgid "Your payment could not be processed."
+msgstr "Ödemeniz alınamadı."
+
+#: woocommerce-gateway-craftgate.php:383
+msgid ""
+"You can create your Craftgate Payment Gateway account <a href=\"https://"
+"craftgate.io\" target=\"_blank\"> here</a>."
+msgstr ""
+"Craftgate Payment Gateway hesabınızı <a href=“https://craftgate.io” "
+"target=“_blank”>buradan</a> oluşturabilirsiniz."
+
+#: woocommerce-gateway-craftgate.php:387
+msgid "Craftgate Payment Gateway is not available to use"
+msgstr "Craftgate Payment Gateway kullanılamaz"
+
+#: woocommerce-gateway-craftgate.php:387
+msgid "The only supported currency is TRY."
+msgstr "Sadece Türk lirası desteklenmektedir."
+
+#: woocommerce-gateway-craftgate.php:400
+msgid "Enable/Disable"
+msgstr "Aktif/Pasif"
+
+#: woocommerce-gateway-craftgate.php:402
+msgid "Enable Craftgate"
+msgstr "Craftgate’i Aktif Et"
+
+#: woocommerce-gateway-craftgate.php:403
+msgid "Enable or disable the gateway."
+msgstr "Craftgate’i aktif veya pasif yapabilirsiniz."
+
+#: woocommerce-gateway-craftgate.php:407
+msgid "Title"
+msgstr "Başlık"
+
+#: woocommerce-gateway-craftgate.php:409
+msgid "This controls the title which the user sees during checkout."
+msgstr "Kullanıcının ödeme esnasında göreceği başlık."
+
+#: woocommerce-gateway-craftgate.php:414
+msgid "Description"
+msgstr "Açıklama"
+
+#: woocommerce-gateway-craftgate.php:416
+msgid "This controls the description which the user sees during checkout."
+msgstr "Kullanıcının ödeme esnasında göreceği açıklama."
+
+#: woocommerce-gateway-craftgate.php:417
+msgid "You can pay with Debit and Credit Card"
+msgstr "Banka veya Kredi Kartı ile ödeyebilirsiniz"
+
+#: woocommerce-gateway-craftgate.php:420
+msgid "Live API Key"
+msgstr "Canlı API Key"
+
+#: woocommerce-gateway-craftgate.php:422
+msgid "Enter your Live API Key."
+msgstr "Canlı API Key’inizi giriniz."
+
+#: woocommerce-gateway-craftgate.php:426
+msgid "Live Secret Key"
+msgstr "Canlı Secret Key"
+
+#: woocommerce-gateway-craftgate.php:428
+msgid "Enter your Live Secret Key."
+msgstr "Canlı Secret Key’inizi giriniz."
+
+#: woocommerce-gateway-craftgate.php:432
+msgid "Sandbox API Key"
+msgstr "Sandbox API Key"
+
+#: woocommerce-gateway-craftgate.php:434
+msgid "Enter your Sandbox API Key."
+msgstr "Sandbox API Key’inizi giriniz."
+
+#: woocommerce-gateway-craftgate.php:438
+msgid "Sandbox Secret Key"
+msgstr "Sandbox Secret Key"
+
+#: woocommerce-gateway-craftgate.php:440
+msgid "Enter your Sandbox Secret Key."
+msgstr "Sandbox Secret Key’inizi giriniz."
+
+#: woocommerce-gateway-craftgate.php:444
+msgid "Sandbox Mode"
+msgstr "Sandbox Modu"
+
+#: woocommerce-gateway-craftgate.php:446
+msgid "Enable Sandbox Mode"
+msgstr "Sandbox Modu Aktif"
+
+#: woocommerce-gateway-craftgate.php:448
+msgid "Enable test mode using sandbox API keys."
+msgstr "Sandbox API bilgilerinizi kullanarak test modunu aktif edebilirsiniz."
+
+#: woocommerce-gateway-craftgate.php:476
+msgid "Craftgate Payment URL"
+msgstr "Craftgate Ödeme URL"
+
+#: woocommerce-gateway-craftgate.php:510
+msgid "Settings"
+msgstr "Ayarlar"
+
+#~ msgid "Gateway Testing"
+#~ msgstr "Craftgate Test Modu"
