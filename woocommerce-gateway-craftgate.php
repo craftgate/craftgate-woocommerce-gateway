@@ -87,7 +87,7 @@ function init_woocommerce_craftgate_gateway()
             $this->method_title = 'Craftgate Payment Gateway';
             $this->method_description = __('Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.', $this->text_domain);
             $this->order_button_text = __('Pay with Debit/Credit Card', $this->text_domain);
-            add_action('woocommerce_receipt_craftgate', array($this, 'receipt_page'));
+
             // Inits admin field and settings.
             $this->init_admin_settings_form_fields();
             $this->init_settings();
@@ -159,9 +159,11 @@ function init_woocommerce_craftgate_gateway()
         /**
          * Handles Craftgate checkout result.
          */
-        public function receipt_page()
+        public function handle_craftgate_checkout_form_result()
         {
+
             try {
+                global $woocommerce;
                 $this->validate_handle_checkout_form_result_params();
                 $order_id = wc_clean($_GET["order_id"]);
                 $order = $this->retrieve_order($order_id);
@@ -174,24 +176,27 @@ function init_woocommerce_craftgate_gateway()
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
                     $order->payment_complete();
-                    $orderMessage = 'Payment ID: ' . $checkout_form_result->paymentId;
+                    $orderMessage = 'Payment ID: ' . $checkout_form_result->id;
                     $order->add_order_note($orderMessage, 0, true);
                     WC()->cart->empty_cart();
                     $woocommerce->cart->empty_cart();
                     wc_empty_cart();
+                    echo "<script>window.top.location.href = '" . $this->get_return_url($order) . "';</script>";
                 } else {
                     $order->update_meta_data('craftgate_payment_error', json_encode($checkout_form_result->paymentError));
                     $order->update_status('failed', $checkout_form_result->paymentError->errorDescription);
                     $order->save();
+                    wc_add_notice(__($checkout_form_result->paymentError->errorDescription, $this->text_domain), 'error');
+                    $redirectUrl = wc_get_checkout_url();
+                    echo "<script>window.top.location.href = '" . $redirectUrl . "';</script>";
                 }
-                $checkoutOrderUrl = $order->get_checkout_order_received_url();
-                $redirectUrl = add_query_arg(array('msg' => 'Thank You', 'type' => 'woocommerce-message'), $checkoutOrderUrl);
-                return wp_redirect($redirectUrl);
+
+                exit;
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                wc_add_notice(__($message, 'weepay-payment'), 'error');
-                $redirectUrl = $woocommerce->cart->get_cart_url();
-                return wp_redirect($redirectUrl);
+                wc_add_notice(__($e->getMessage(), $this->text_domain), 'error');
+                $redirectUrl = wc_get_checkout_url();
+                echo "<script>window.top.location.href = '" . $redirectUrl . "';</script>";
                 $this->render_error_message(__('An error occurred. Error Code: ', $this->text_domain) . '-2');
             }
         }
@@ -298,7 +303,7 @@ _e('Your payment could not be processed.', $this->text_domain);
                 'currency' => \Craftgate\Model\Currency::TL,
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
-                'callbackUrl' => add_query_arg('wc-api', 'WC_Craftgate_Gateway', $order->get_checkout_order_received_url()), //get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id, //
+                'callbackUrl' => get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'items' => $this->build_items($order),
             );
         }
@@ -328,7 +333,6 @@ _e('Your payment could not be processed.', $this->text_domain);
          */
         private function validate_handle_checkout_form_result_params()
         {
-
             $clean_orderid = wc_clean($_GET["order_id"]);
             $clean_token = wc_clean($_POST["token"]);
             if (!isset($clean_orderid) || !isset($clean_token)) {
