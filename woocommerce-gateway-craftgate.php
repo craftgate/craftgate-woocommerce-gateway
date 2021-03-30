@@ -6,8 +6,8 @@
  * Author: Craftgate
  * Author URI: https://craftgate.io
  * Version: 1.0.0
- * Requires at least: 4.7
- * WC tested up to: 5.7.0
+ * Requires at least: 3.0.0
+ * WC tested up to: 5.1.0
  * Requires PHP: 5.6
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
