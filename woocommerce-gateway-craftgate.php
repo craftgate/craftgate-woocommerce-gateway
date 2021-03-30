@@ -21,7 +21,6 @@ if (!defined('ABSPATH')) {
 
 add_action('plugins_loaded', 'init_woocommerce_craftgate_gateway', 0);
 
-
 /**
  * Initializes WooCommerce Craftgate payment gateway
  */
@@ -88,7 +87,7 @@ function init_woocommerce_craftgate_gateway()
             $this->method_title = 'Craftgate Payment Gateway';
             $this->method_description = __('Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.', $this->text_domain);
             $this->order_button_text = __('Pay with Debit/Credit Card', $this->text_domain);
-
+            add_action('woocommerce_receipt_craftgate', array($this, 'receipt_page'));
             // Inits admin field and settings.
             $this->init_admin_settings_form_fields();
             $this->init_settings();
@@ -160,14 +159,14 @@ function init_woocommerce_craftgate_gateway()
         /**
          * Handles Craftgate checkout result.
          */
-        public function handle_craftgate_checkout_form_result()
+        public function receipt_page()
         {
             try {
                 $this->validate_handle_checkout_form_result_params();
-                $order_id = $_GET["order_id"];
+                $order_id = wc_clean($_GET["order_id"]);
                 $order = $this->retrieve_order($order_id);
 
-                $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result($_POST["token"]);
+                $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result(wc_clean($_POST["token"]));
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
                 $this->update_order_checkout_form_result_metadata($order, $checkout_form_result);
@@ -175,17 +174,24 @@ function init_woocommerce_craftgate_gateway()
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
                     $order->payment_complete();
+                    $orderMessage = 'Payment ID: ' . $checkout_form_result->paymentId;
+                    $order->add_order_note($orderMessage, 0, true);
+                    WC()->cart->empty_cart();
+                    $woocommerce->cart->empty_cart();
+                    wc_empty_cart();
                 } else {
                     $order->update_meta_data('craftgate_payment_error', json_encode($checkout_form_result->paymentError));
                     $order->update_status('failed', $checkout_form_result->paymentError->errorDescription);
                     $order->save();
                 }
-
-                wc_empty_cart();
-                echo "<script>window.top.location.href = '" . $this->get_return_url($order) . "';</script>";
-                exit;
+                $checkoutOrderUrl = $order->get_checkout_order_received_url();
+                $redirectUrl = add_query_arg(array('msg' => 'Thank You', 'type' => 'woocommerce-message'), $checkoutOrderUrl);
+                return wp_redirect($redirectUrl);
             } catch (Exception $e) {
                 error_log($e->getMessage());
+                wc_add_notice(__($message, 'weepay-payment'), 'error');
+                $redirectUrl = $woocommerce->cart->get_cart_url();
+                return wp_redirect($redirectUrl);
                 $this->render_error_message(__('An error occurred. Error Code: ', $this->text_domain) . '-2');
             }
         }
@@ -198,7 +204,9 @@ function init_woocommerce_craftgate_gateway()
         public function show_payment_error($order_id)
         {
             $order = $this->retrieve_order($order_id);
-            if ($order->get_status() != 'failed') return;
+            if ($order->get_status() != 'failed') {
+                return;
+            }
 
             $message = "";
             $craftgate_error = $order->get_meta('craftgate_payment_error');
@@ -206,15 +214,15 @@ function init_woocommerce_craftgate_gateway()
             if (isset($craftgate_error)) {
                 $craftgate_error_json = json_decode($craftgate_error);
                 $message = !empty($craftgate_error_json->errorDescription) ? $craftgate_error_json->errorDescription : $craftgate_error_json->errorGroup;
-            } ?>
+            }?>
             <div class="craftgate-alert">
                 <?php
-                _e('Your payment could not be processed.', $this->text_domain);
-                echo '<br/>';
-                echo $message ?>
+_e('Your payment could not be processed.', $this->text_domain);
+            echo '<br/>';
+            echo $message?>
             </div>
             <?php
-        }
+}
 
         /**
          * Checks if API request is valid.
@@ -237,7 +245,7 @@ function init_woocommerce_craftgate_gateway()
             $order = wc_get_order($order_id);
             return array(
                 'result' => 'success',
-                'redirect' => $order->get_checkout_payment_url(true)
+                'redirect' => $order->get_checkout_payment_url(true),
             );
         }
 
@@ -267,7 +275,7 @@ function init_woocommerce_craftgate_gateway()
                     $items[] = [
                         'externalId' => $item->get_id(),
                         'name' => $item->get_name(),
-                        'price' => $this->format_price($item->get_total())
+                        'price' => $this->format_price($item->get_total()),
                     ];
                 }
             }
@@ -290,8 +298,8 @@ function init_woocommerce_craftgate_gateway()
                 'currency' => \Craftgate\Model\Currency::TL,
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
-                'callbackUrl' => get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
-                'items' => $this->build_items($order)
+                'callbackUrl' => add_query_arg('wc-api', 'WC_Craftgate_Gateway', $order->get_checkout_order_received_url()), //get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id, //
+                'items' => $this->build_items($order),
             );
         }
 
@@ -320,7 +328,10 @@ function init_woocommerce_craftgate_gateway()
          */
         private function validate_handle_checkout_form_result_params()
         {
-            if (!isset($_GET["order_id"]) || !isset($_POST["token"])) {
+
+            $clean_orderid = wc_clean($_GET["order_id"]);
+            $clean_token = wc_clean($_POST["token"]);
+            if (!isset($clean_orderid) || !isset($clean_token)) {
                 throw new Exception(__('Your payment could not be processed.', $this->text_domain));
             }
         }
@@ -346,7 +357,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function update_order_checkout_form_result_metadata($order, $checkout_form_result)
         {
-            $order->update_meta_data('craftgate_checkout_form_callback_params', json_encode($_POST));
+            $order->update_meta_data('craftgate_checkout_form_callback_params', json_encode(wc_clean($_POST)));
             if (isset($checkout_form_result->id)) {
                 $craftgate_payment_info = array(
                     'is_sandbox_payment' => $this->is_sandbox_active,
@@ -378,13 +389,13 @@ function init_woocommerce_craftgate_gateway()
                 echo '<table class="form-table">';
                 $this->generate_settings_html();
                 echo '</table>';
-            } else { ?>
+            } else {?>
                 <p>
-                    <?php _e('You can create your Craftgate Payment Gateway account <a href="https://craftgate.io" target="_blank"> here</a>.', $this->text_domain) ?>
+                    <?php _e('You can create your Craftgate Payment Gateway account <a href="https://craftgate.io" target="_blank"> here</a>.', $this->text_domain)?>
                 </p>
                 <div class="inline error">
                     <p>
-                        <strong><?php _e('Craftgate Payment Gateway is not available to use', $this->text_domain) ?></strong>: <?php _e('The only supported currency is TRY.', $this->text_domain) ?>
+                        <strong><?php _e('Craftgate Payment Gateway is not available to use', $this->text_domain)?></strong>: <?php _e('The only supported currency is TRY.', $this->text_domain)?>
                     </p>
                 </div>
             <?php }
@@ -401,7 +412,7 @@ function init_woocommerce_craftgate_gateway()
                     'type' => 'checkbox',
                     'label' => __('Enable Craftgate', $this->text_domain),
                     'description' => __('Enable or disable the gateway.', $this->text_domain),
-                    'default' => 'yes'
+                    'default' => 'yes',
                 ),
                 'title' => array(
                     'title' => __('Title', $this->text_domain),
@@ -420,25 +431,25 @@ function init_woocommerce_craftgate_gateway()
                     'title' => __('Live API Key', $this->text_domain),
                     'type' => 'text',
                     'description' => __('Enter your Live API Key.', $this->text_domain),
-                    'default' => ''
+                    'default' => '',
                 ),
                 'live_secret_key' => array(
                     'title' => __('Live Secret Key', $this->text_domain),
                     'type' => 'text',
                     'description' => __('Enter your Live Secret Key.', $this->text_domain),
-                    'default' => ''
+                    'default' => '',
                 ),
                 'sandbox_api_key' => array(
                     'title' => __('Sandbox API Key', $this->text_domain),
                     'type' => 'text',
                     'description' => __('Enter your Sandbox API Key.', $this->text_domain),
-                    'default' => ''
+                    'default' => '',
                 ),
                 'sandbox_secret_key' => array(
                     'title' => __('Sandbox Secret Key', $this->text_domain),
                     'type' => 'text',
                     'description' => __('Enter your Sandbox Secret Key.', $this->text_domain),
-                    'default' => ''
+                    'default' => '',
                 ),
                 'is_sandbox_active' => array(
                     'title' => __('Sandbox Mode', $this->text_domain),
@@ -446,7 +457,7 @@ function init_woocommerce_craftgate_gateway()
                     'label' => __('Enable Sandbox Mode', $this->text_domain),
                     'default' => 'no',
                     'description' => __('Enable test mode using sandbox API keys.', $this->text_domain),
-                )
+                ),
             );
         }
     }
@@ -473,11 +484,10 @@ function init_woocommerce_craftgate_gateway()
 
         $url .= $craftgate_payment_info->payment_id;
         $link = "<a target='_blank' href='$url'>$url</a>";
-        echo '<p><strong>' . __('Craftgate Payment URL','woocommerce-gateway-craftgate') . ':</strong> <br/>' . $link . '</p>';
+        echo '<p><strong>' . __('Craftgate Payment URL', 'woocommerce-gateway-craftgate') . ':</strong> <br/>' . $link . '</p>';
     }
 
     add_action('woocommerce_admin_order_data_after_billing_address', 'show_craftgate_payment_url', 10, 1);
-
 
     /**
      * WooCommerce actions.
