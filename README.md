@@ -1,1 +1,0 @@
-# craftgate-woocommerce-plugin
