@@ -41,6 +41,18 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * Test ortamından ödeme almak için Enable Sandbox Mode seçeneğinin seçili olması gerekmektedir. Kapalı olduğu durumda canlı ortamdan ödeme alma aktif olacaktır.
 * Detaylı bilgi için [WooCommerce eklenti](https://developer.craftgate.io/hazir-eticaret-modulleri/woocommerce) adresini ziyaret edebilirsiniz.
 
+== Screenshots ==
+1. Eklentiler
+2. Ödeme Yöntemleri
+3. Ayarlar
+4. Sipariş Sayfası
+5. Ödeme Formu
+6. Sipariş Yönetim Sayfası
+
 == Changelog ==
+= 1.0.0 - 2021-04-02 =
+* First Release
+
+== Upgrade Notice ==
 = 1.0.0 - 2021-04-02 =
 * First Release
