@@ -1,6 +1,6 @@
 === Craftgate Payment Gateway ===
 Contributors: craftgateio
-Tags: craftgate, payment gateway, checkout, sanal pos, credit card, debit card
+Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos, pazaryeri, cüzdan, ödeme formu
 Requires at least: 4.4
 Tested up to: 5.7
 Requires PHP: 5.6
