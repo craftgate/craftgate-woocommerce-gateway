@@ -147,6 +147,7 @@ function init_woocommerce_craftgate_gateway()
         public function init_craftgate_checkout_form($order_id = null)
         {
             try {
+                $this->set_cookie_same_site();
                 $request = $this->build_init_checkout_form_request($order_id);
                 $response = $this->craftgate_api->init_checkout_form($request);
 
@@ -206,7 +207,6 @@ function init_woocommerce_craftgate_gateway()
                 $this->render_error_message(__('An error occurred. Error Code: ', $this->text_domain) . '-2');
             }
         }
-
 
         /**
          * Checks if API request is valid.
@@ -438,6 +438,47 @@ function init_woocommerce_craftgate_gateway()
                     'description' => __('Enable test mode using sandbox API keys.', $this->text_domain),
                 ),
             );
+        }
+
+        /**
+         * Sets samesite property of woocommerce session related cookie
+         */
+        private function set_cookie_same_site()
+        {
+            $wooCommerceCookieKey = 'wp_woocommerce_session_';
+            foreach ($_COOKIE as $name => $value) {
+                if (stripos($name, $wooCommerceCookieKey) === 0) {
+                    $wooCommerceCookieKey = $name;
+                }
+            }
+            $wooCommerceCookieKey = sanitize_text_field($wooCommerceCookieKey);
+            $this->set_cookie($wooCommerceCookieKey, $_COOKIE[$wooCommerceCookieKey], time() + 86400, "/", $_SERVER['SERVER_NAME'], true, true);
+        }
+
+        /** Sets cookie.
+         * @param $name string Name
+         * @param $value string Value
+         * @param $expire int Expire
+         * @param $path string Path
+         * @param $domain string Domain
+         * @param $secure bool Secure
+         * @param $httponly bool HttpOnly
+         */
+        private function set_cookie($name, $value, $expire, $path, $domain, $secure, $httponly)
+        {
+            if (PHP_VERSION_ID < 70300) {
+                setcookie($name, $value, $expire, "$path; samesite=None", $domain, $secure, $httponly);
+            } else {
+                setcookie($name, $value, [
+                    'expires' => $expire,
+                    'path' => $path,
+                    'domain' => $domain,
+                    'samesite' => 'None',
+                    'secure' => $secure,
+                    'httponly' => $httponly,
+                ]);
+
+            }
         }
     }
 
