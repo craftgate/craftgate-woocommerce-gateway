@@ -147,6 +147,7 @@ function init_woocommerce_craftgate_gateway()
         public function init_craftgate_checkout_form($order_id = null)
         {
             try {
+                $this->set_cookie_same_site();
                 $request = $this->build_init_checkout_form_request($order_id);
                 $response = $this->craftgate_api->init_checkout_form($request);
 
@@ -180,6 +181,9 @@ function init_woocommerce_craftgate_gateway()
 
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
+                    if ($checkout_form_result->installment > 1) {
+                        $this->update_order_for_installment($order, $checkout_form_result);
+                    }
                     $order->payment_complete();
                     $orderMessage = 'Payment ID: ' . $checkout_form_result->id;
                     $order->add_order_note($orderMessage, 0, true);
@@ -207,7 +211,6 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
-
         /**
          * Checks if API request is valid.
          *
@@ -231,6 +234,29 @@ function init_woocommerce_craftgate_gateway()
                 'result' => 'success',
                 'redirect' => $order->get_checkout_payment_url(true),
             );
+        }
+
+        /** Adds tax fee to order.
+         * @param $order object WooCommerce Order
+         * @param $checkout_form_result object Checkout Form Result
+         */
+        private function update_order_for_installment($order, $checkout_form_result)
+        {
+            $installment = $checkout_form_result->installment;
+            $order_amount = $this->format_price($order->get_total());
+            $installment_fee = $checkout_form_result->paidPrice - $order_amount;
+            $order_fee = new stdClass();
+            $order_fee->id = 'Installment Fee';
+            $order_fee->name = __('Installment Fee', $this->text_domain);
+            $order_fee->amount = $installment_fee;
+            $order_fee->taxable = false;
+            $order_fee->tax = 0;
+            $order_fee->tax_data = array();
+            $order_fee->tax_class = '';
+            $order->add_fee($order_fee);
+            $order->calculate_totals(true);
+            update_post_meta($order->id, 'craftgate_installment_number', esc_sql($installment));
+            update_post_meta($order->id, 'craftgate_installment_fee', $installment_fee);
         }
 
         /**
@@ -438,6 +464,47 @@ function init_woocommerce_craftgate_gateway()
                     'description' => __('Enable test mode using sandbox API keys.', $this->text_domain),
                 ),
             );
+        }
+
+        /**
+         * Sets samesite property of woocommerce session related cookie
+         */
+        private function set_cookie_same_site()
+        {
+            $wooCommerceCookieKey = 'wp_woocommerce_session_';
+            foreach ($_COOKIE as $name => $value) {
+                if (stripos($name, $wooCommerceCookieKey) === 0) {
+                    $wooCommerceCookieKey = $name;
+                }
+            }
+            $wooCommerceCookieKey = sanitize_text_field($wooCommerceCookieKey);
+            $this->set_cookie($wooCommerceCookieKey, $_COOKIE[$wooCommerceCookieKey], time() + 86400, "/", $_SERVER['SERVER_NAME'], true, true);
+        }
+
+        /** Sets cookie.
+         * @param $name string Name
+         * @param $value string Value
+         * @param $expire int Expire
+         * @param $path string Path
+         * @param $domain string Domain
+         * @param $secure bool Secure
+         * @param $httponly bool HttpOnly
+         */
+        private function set_cookie($name, $value, $expire, $path, $domain, $secure, $httponly)
+        {
+            if (PHP_VERSION_ID < 70300) {
+                setcookie($name, $value, $expire, "$path; samesite=None", $domain, $secure, $httponly);
+            } else {
+                setcookie($name, $value, [
+                    'expires' => $expire,
+                    'path' => $path,
+                    'domain' => $domain,
+                    'samesite' => 'None',
+                    'secure' => $secure,
+                    'httponly' => $httponly,
+                ]);
+
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2021-03-31 17:05+0300\n"
-"PO-Revision-Date: 2021-03-31 17:05+0300\n"
+"POT-Creation-Date: 2021-08-31 11:04+0300\n"
+"PO-Revision-Date: 2021-08-31 11:05+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: includes\n"
 
-#: craftgate-payment-gateway.php:93
+#: craftgate-payment-gateway.php:95
 msgid ""
 "Accept debit/credit card payments easily and directly on your WordPress site "
 "using Craftgate."
@@ -24,117 +24,124 @@ msgstr ""
 "Craftgate ile WordPress siteniz üzerinden kolay ve doğrudan banka/kredi "
 "kartı ile ödeme alın."
 
-#: craftgate-payment-gateway.php:94 craftgate-payment-gateway.php:430
+#: craftgate-payment-gateway.php:96 craftgate-payment-gateway.php:427
 msgid "Pay with Debit/Credit Card"
 msgstr "Banka/Kredi Kartı ile Öde"
 
-#: craftgate-payment-gateway.php:156 craftgate-payment-gateway.php:160
-#: craftgate-payment-gateway.php:204
+#: craftgate-payment-gateway.php:158 craftgate-payment-gateway.php:162
+#: craftgate-payment-gateway.php:210
 msgid "An error occurred. Error Code: "
 msgstr "Bir hata meydana geldi. Hata Kodu: "
 
-#: craftgate-payment-gateway.php:229 craftgate-payment-gateway.php:343
-#: craftgate-payment-gateway.php:356
+#: craftgate-payment-gateway.php:250
+msgid "Installment Fee"
+msgstr "Taksit Komisyonu"
+
+#: craftgate-payment-gateway.php:344 craftgate-payment-gateway.php:357
 msgid "Your payment could not be processed."
 msgstr "Ödemeniz alınamadı."
 
-#: craftgate-payment-gateway.php:402
+#: craftgate-payment-gateway.php:399
+#, fuzzy
+#| msgid ""
+#| "You can create your Craftgate Payment Gateway account <a href=\"https://"
+#| "craftgate.io\" target=\"_blank\"> here</a>."
 msgid ""
 "You can create your Craftgate Payment Gateway account <a href=\"https://"
-"craftgate.io\" target=\"_blank\"> here</a>."
+"craftgate.io/\" target=\"_blank\"> here</a>."
 msgstr ""
 "Craftgate Payment Gateway hesabınızı <a href=“https://craftgate.io” "
 "target=“_blank”>buradan</a> oluşturabilirsiniz."
 
-#: craftgate-payment-gateway.php:406
+#: craftgate-payment-gateway.php:403
 msgid "Craftgate Payment Gateway is not available to use"
 msgstr "Craftgate Payment Gateway kullanılamaz"
 
-#: craftgate-payment-gateway.php:406
+#: craftgate-payment-gateway.php:403
 msgid "The only supported currency is TRY."
 msgstr "Sadece Türk lirası desteklenmektedir."
 
-#: craftgate-payment-gateway.php:419
+#: craftgate-payment-gateway.php:416
 msgid "Enable/Disable"
 msgstr "Aktif/Pasif"
 
-#: craftgate-payment-gateway.php:421
+#: craftgate-payment-gateway.php:418
 msgid "Enable Craftgate"
 msgstr "Craftgate’i Aktif Et"
 
-#: craftgate-payment-gateway.php:422
+#: craftgate-payment-gateway.php:419
 msgid "Enable or disable the gateway."
 msgstr "Craftgate’i aktif veya pasif yapabilirsiniz."
 
-#: craftgate-payment-gateway.php:426
+#: craftgate-payment-gateway.php:423
 msgid "Title"
 msgstr "Başlık"
 
-#: craftgate-payment-gateway.php:428
+#: craftgate-payment-gateway.php:425
 msgid "This controls the title which the user sees during checkout."
 msgstr "Kullanıcının ödeme esnasında göreceği başlık."
 
-#: craftgate-payment-gateway.php:433
+#: craftgate-payment-gateway.php:430
 msgid "Description"
 msgstr "Açıklama"
 
-#: craftgate-payment-gateway.php:435
+#: craftgate-payment-gateway.php:432
 msgid "This controls the description which the user sees during checkout."
 msgstr "Kullanıcının ödeme esnasında göreceği açıklama."
 
-#: craftgate-payment-gateway.php:436
+#: craftgate-payment-gateway.php:433
 msgid "You can pay with Debit and Credit Card"
 msgstr "Banka veya Kredi Kartı ile ödeyebilirsiniz"
 
-#: craftgate-payment-gateway.php:439
+#: craftgate-payment-gateway.php:436
 msgid "Live API Key"
 msgstr "Canlı API Key"
 
-#: craftgate-payment-gateway.php:441
+#: craftgate-payment-gateway.php:438
 msgid "Enter your Live API Key."
 msgstr "Canlı API Key’inizi giriniz."
 
-#: craftgate-payment-gateway.php:445
+#: craftgate-payment-gateway.php:442
 msgid "Live Secret Key"
 msgstr "Canlı Secret Key"
 
-#: craftgate-payment-gateway.php:447
+#: craftgate-payment-gateway.php:444
 msgid "Enter your Live Secret Key."
 msgstr "Canlı Secret Key’inizi giriniz."
 
-#: craftgate-payment-gateway.php:451
+#: craftgate-payment-gateway.php:448
 msgid "Sandbox API Key"
 msgstr "Sandbox API Key"
 
-#: craftgate-payment-gateway.php:453
+#: craftgate-payment-gateway.php:450
 msgid "Enter your Sandbox API Key."
 msgstr "Sandbox API Key’inizi giriniz."
 
-#: craftgate-payment-gateway.php:457
+#: craftgate-payment-gateway.php:454
 msgid "Sandbox Secret Key"
 msgstr "Sandbox Secret Key"
 
-#: craftgate-payment-gateway.php:459
+#: craftgate-payment-gateway.php:456
 msgid "Enter your Sandbox Secret Key."
 msgstr "Sandbox Secret Key’inizi giriniz."
 
-#: craftgate-payment-gateway.php:463
+#: craftgate-payment-gateway.php:460
 msgid "Sandbox Mode"
 msgstr "Sandbox Modu"
 
-#: craftgate-payment-gateway.php:465
+#: craftgate-payment-gateway.php:462
 msgid "Enable Sandbox Mode"
 msgstr "Sandbox Modu Aktif"
 
-#: craftgate-payment-gateway.php:467
+#: craftgate-payment-gateway.php:464
 msgid "Enable test mode using sandbox API keys."
 msgstr "Sandbox API bilgilerinizi kullanarak test modunu aktif edebilirsiniz."
 
-#: craftgate-payment-gateway.php:495
+#: craftgate-payment-gateway.php:534
 msgid "Craftgate Payment URL"
 msgstr "Craftgate Ödeme URL"
 
-#: craftgate-payment-gateway.php:528
+#: craftgate-payment-gateway.php:567
 msgid "Settings"
 msgstr "Ayarlar"
 
