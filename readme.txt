@@ -2,9 +2,9 @@
 Contributors: craftgateio
 Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos, pazaryeri, cüzdan, ödeme formu
 Requires at least: 4.4
-Tested up to: 5.7
+Tested up to: 5.8.3
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,6 +50,11 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.2 - 2022-01-25 =
+* adds multi currency support
+* adds checkout form language support
+* adds iframe options to customize checkout form
+
 = 1.0.1 - 2021-09-28 =
 * same site cookie fixes
 * adds installment fee to order after checkout
@@ -58,6 +63,11 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * First Release
 
 == Upgrade Notice ==
+= 1.0.2 - 2022-01-25 =
+* adds multi currency support
+* adds checkout form language support
+* adds iframe options to customize checkout form
+
 = 1.0.1 - 2021-09-28 =
 * same site cookie fixes
 * adds installment fee to order after checkout
