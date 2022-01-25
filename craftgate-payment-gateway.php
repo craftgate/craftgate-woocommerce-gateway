@@ -5,11 +5,11 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 4.4
- * Tested up to: 5.7
+ * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
- * WC tested up to: 5.1.0
+ * WC tested up to: 6.1.1
  * Requires PHP: 5.6
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -152,7 +152,9 @@ function init_woocommerce_craftgate_gateway()
                 $response = $this->craftgate_api->init_checkout_form($request);
 
                 if (isset($response->pageUrl)) {
-                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true"></iframe></div>';
+                    $language = $this->get_option("language");
+                    $iframeOptions = $this->get_option("iframe_options");
+                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language .'&' .$iframeOptions. '"></iframe></div>';
                 } else {
                     error_log(json_encode($response));
                     $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . $response->errors->errorCode);
@@ -173,7 +175,7 @@ function init_woocommerce_craftgate_gateway()
                 $this->validate_handle_checkout_form_result_params();
                 $order_id = wc_clean($_GET["order_id"]);
                 $order = $this->retrieve_order($order_id);
-
+                $GLOBALS["cg-lang-header"]=$this->get_option("language");
                 $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result(wc_clean($_POST["token"]));
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
@@ -301,14 +303,13 @@ function init_woocommerce_craftgate_gateway()
         private function build_init_checkout_form_request($order_id)
         {
             $order = $this->retrieve_order($order_id);
-
             return array(
                 'price' => $this->format_price($order->get_total()),
                 'paidPrice' => $this->format_price($order->get_total()),
-                'currency' => \Craftgate\Model\Currency::TL,
+                'currency' => $order->get_currency(),
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
-                'callbackUrl' => get_bloginfo('url') . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
+                'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'items' => $this->build_items($order),
             );
         }
@@ -320,7 +321,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL,\Craftgate\Model\Currency::USD,\Craftgate\Model\Currency::EUR));
         }
 
         /**
@@ -462,6 +463,22 @@ function init_woocommerce_craftgate_gateway()
                     'label' => __('Enable Sandbox Mode', $this->text_domain),
                     'default' => 'no',
                     'description' => __('Enable test mode using sandbox API keys.', $this->text_domain),
+                ),
+                'language' => array(
+                    'title' => __('Language', $this->text_domain),
+                    'type' => 'select',
+                    'options' => array(
+                        'tr' => 'Turkish',
+                        'en' => 'English',
+                    ),
+                    'description' => __('Change the language of payment form.', $this->text_domain),
+                    'default' => 'tr',
+                ),
+                'iframe_options' => array(
+                    'title' => __('Iframe Options', $this->text_domain),
+                    'type' => 'text',
+                    'description' => __('Example: hideFooter=true&animatedCard=true', $this->text_domain),
+                    'default' => '',
                 ),
             );
         }

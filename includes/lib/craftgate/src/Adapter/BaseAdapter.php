@@ -55,6 +55,10 @@ class BaseAdapter
             'content-type: application/json'
         );
 
+        if ($GLOBALS["cg-lang-header"]) {
+            $headers[] = 'lang: ' . $GLOBALS["cg-lang-header"];
+        }
+
         $headers[] = 'x-api-key: ' . $this->options->getApiKey();
         $headers[] = 'x-rnd-key: ' . ($randomString = Guid::generate());
         $headers[] = 'x-auth-version: v1';
