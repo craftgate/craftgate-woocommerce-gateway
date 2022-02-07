@@ -340,6 +340,13 @@ function init_woocommerce_craftgate_gateway()
                     ];
                 }
             }
+            if($order->get_shipping_total()>0){
+                $items[] = [
+                    'externalId' => 'shipping-total',
+                    'name' => __('Shipping Total', $this->text_domain),
+                    'price' => $order->get_shipping_total(),
+                ];
+            }
             return $items;
         }
 
