@@ -390,7 +390,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR, \Craftgate\Model\Currency::GBP));
         }
 
         /**
