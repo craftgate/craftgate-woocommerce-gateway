@@ -155,6 +155,16 @@ function init_woocommerce_craftgate_gateway()
                     $language = $this->get_option("language");
                     $iframeOptions = $this->get_option("iframe_options");
                     echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language . '&' . $iframeOptions . '"></iframe></div>';
+                    ?>
+                    <script>
+                        window.addEventListener("message", function (event) {
+                            const {type, value} = event.data;
+                            if (type === 'HEIGHT_CHANGED') {
+                                document.getElementById('craftgate_payment_form').style.height = value + 'px';
+                            }
+                        });
+                    </script>
+                    <?php
                 } else {
                     error_log(json_encode($response));
                     $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . $response->errors->errorCode);
@@ -291,7 +301,7 @@ function init_woocommerce_craftgate_gateway()
 
         private function save_card_user_key($customer_id, $card_user_key, $api_key)
         {
-            if (!isset($customer_id)){
+            if (!isset($customer_id)) {
                 return;
             }
             global $wpdb;
@@ -340,7 +350,7 @@ function init_woocommerce_craftgate_gateway()
                     ];
                 }
             }
-            if($order->get_shipping_total()>0){
+            if ($order->get_shipping_total() > 0) {
                 $items[] = [
                     'externalId' => 'shipping-total',
                     'name' => __('Shipping Total', $this->text_domain),
@@ -380,7 +390,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL,\Craftgate\Model\Currency::USD,\Craftgate\Model\Currency::EUR));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR));
         }
 
         /**
