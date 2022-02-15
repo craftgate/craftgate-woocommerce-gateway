@@ -154,7 +154,7 @@ function init_woocommerce_craftgate_gateway()
                 if (isset($response->pageUrl)) {
                     $language = $this->get_option("language");
                     $iframeOptions = $this->get_option("iframe_options");
-                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language .'&' .$iframeOptions. '"></iframe></div>';
+                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language . '&' . $iframeOptions . '"></iframe></div>';
                 } else {
                     error_log(json_encode($response));
                     $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . $response->errors->errorCode);
@@ -175,7 +175,7 @@ function init_woocommerce_craftgate_gateway()
                 $this->validate_handle_checkout_form_result_params();
                 $order_id = wc_clean($_GET["order_id"]);
                 $order = $this->retrieve_order($order_id);
-                $GLOBALS["cg-lang-header"]=$this->get_option("language");
+                $GLOBALS["cg-lang-header"] = $this->get_option("language");
                 $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result(wc_clean($_POST["token"]));
 
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
@@ -303,7 +303,7 @@ function init_woocommerce_craftgate_gateway()
         private function build_init_checkout_form_request($order_id)
         {
             $order = $this->retrieve_order($order_id);
-            return array(
+            $init_checkout_form_request = array(
                 'price' => $this->format_price($order->get_total()),
                 'paidPrice' => $this->format_price($order->get_total()),
                 'currency' => $order->get_currency(),
@@ -312,6 +312,12 @@ function init_woocommerce_craftgate_gateway()
                 'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'items' => $this->build_items($order),
             );
+            if ($order->get_billing_email() && strlen(trim($order->get_billing_email())) > 0) {
+                $init_checkout_form_request['additionalParams'] = array(
+                    'buyerEmail' => $order->get_billing_email()
+                );
+            }
+            return $init_checkout_form_request;
         }
 
         /**
@@ -321,7 +327,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL,\Craftgate\Model\Currency::USD,\Craftgate\Model\Currency::EUR));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR));
         }
 
         /**
