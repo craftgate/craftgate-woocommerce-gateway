@@ -50,6 +50,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.3 - 2022-02-15 =
+* adds billing email address to init checkout form request
+
 = 1.0.2 - 2022-01-25 =
 * adds multi currency support
 * adds checkout form language support
@@ -63,6 +66,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * First Release
 
 == Upgrade Notice ==
+= 1.0.3 - 2022-02-15 =
+* adds billing email address to init checkout form request
+
 = 1.0.2 - 2022-01-25 =
 * adds multi currency support
 * adds checkout form language support
