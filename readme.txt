@@ -4,7 +4,7 @@ Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos,
 Requires at least: 4.4
 Tested up to: 5.8.3
 Requires PHP: 5.6
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
