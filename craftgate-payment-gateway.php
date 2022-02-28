@@ -378,10 +378,15 @@ function init_woocommerce_craftgate_gateway()
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
                 'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
-                'cardUserKey' => $this->retrieve_card_user_key($customer_id, $this->api_key),
                 'disableStoreCard' => $customer_id == null,
                 'items' => $this->build_items($order),
             );
+
+            $card_user_key = $this->retrieve_card_user_key($customer_id, $this->api_key);
+            if ($card_user_key != null) {
+                $init_checkout_form_request['cardUserKey'] = $card_user_key;
+            }
+
             if ($order->get_billing_email() && strlen(trim($order->get_billing_email())) > 0) {
                 $init_checkout_form_request['additionalParams'] = array(
                     'buyerEmail' => $order->get_billing_email()
