@@ -5,7 +5,7 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires at least: 4.4
  * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
@@ -155,6 +155,16 @@ function init_woocommerce_craftgate_gateway()
                     $language = $this->get_option("language");
                     $iframeOptions = $this->get_option("iframe_options");
                     echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language . '&' . $iframeOptions . '"></iframe></div>';
+                    ?>
+                    <script>
+                        window.addEventListener("message", function (event) {
+                            const {type, value} = event.data;
+                            if (type === 'HEIGHT_CHANGED') {
+                                document.getElementById('craftgate_payment_form').style.height = value + 'px';
+                            }
+                        });
+                    </script>
+                    <?php
                 } else {
                     error_log(json_encode($response));
                     $this->render_error_message(__("An error occurred. Error Code: ", $this->text_domain) . $response->errors->errorCode);
@@ -186,6 +196,12 @@ function init_woocommerce_craftgate_gateway()
                     if ($checkout_form_result->installment > 1) {
                         $this->update_order_for_installment($order, $checkout_form_result);
                     }
+
+                    $customer_id = $order->get_user()->ID;
+                    if (isset($checkout_form_result->cardUserKey) && $this->retrieve_card_user_key($customer_id, $this->api_key) != $checkout_form_result->cardUserKey) {
+                        $this->save_card_user_key($customer_id, $checkout_form_result->cardUserKey, $this->api_key);
+                    }
+
                     $order->payment_complete();
                     $orderMessage = 'Payment ID: ' . $checkout_form_result->id;
                     $order->add_order_note($orderMessage, 0, true);
@@ -261,6 +277,50 @@ function init_woocommerce_craftgate_gateway()
             update_post_meta($order->id, 'craftgate_installment_fee', $installment_fee);
         }
 
+        private function retrieve_card_user_key($customer_id, $api_key)
+        {
+            if (!isset($customer_id)) {
+                return null;
+            }
+
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'craftgate_card';
+            $query = $wpdb->prepare("
+                 SELECT card_user_key FROM {$table_name}
+                 WHERE  customer_id = %d AND api_key = %s 
+                 ORDER BY craftgate_card_id DESC LIMIT 1;
+                ", $customer_id, $api_key
+            );
+
+            $result = $wpdb->get_col($query);
+            if ($result[0]) {
+                return $result[0];
+            } else {
+                return null;
+            }
+        }
+
+        private function save_card_user_key($customer_id, $card_user_key, $api_key)
+        {
+            if (!isset($customer_id)) {
+                return;
+            }
+            global $wpdb;
+            $wpdb->insert(
+                $wpdb->prefix . 'craftgate_card',
+                array(
+                    'customer_id' => $customer_id,
+                    'card_user_key' => $card_user_key,
+                    'api_key' => $api_key
+                ),
+                array(
+                    '%d',
+                    '%s',
+                    '%s',
+                )
+            );
+        }
+
         /**
          * Renders error message.
          *
@@ -291,6 +351,13 @@ function init_woocommerce_craftgate_gateway()
                     ];
                 }
             }
+            if ($order->get_shipping_total() > 0) {
+                $items[] = [
+                    'externalId' => 'shipping-total',
+                    'name' => __('Shipping Total', $this->text_domain),
+                    'price' => $order->get_shipping_total(),
+                ];
+            }
             return $items;
         }
 
@@ -303,6 +370,7 @@ function init_woocommerce_craftgate_gateway()
         private function build_init_checkout_form_request($order_id)
         {
             $order = $this->retrieve_order($order_id);
+            $customer_id = $order->get_user()->ID;
             $init_checkout_form_request = array(
                 'price' => $this->format_price($order->get_total()),
                 'paidPrice' => $this->format_price($order->get_total()),
@@ -310,6 +378,8 @@ function init_woocommerce_craftgate_gateway()
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
                 'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
+                'cardUserKey' => $this->retrieve_card_user_key($customer_id, $this->api_key),
+                'disableStoreCard' => $customer_id == null,
                 'items' => $this->build_items($order),
             );
             if ($order->get_billing_email() && strlen(trim($order->get_billing_email())) > 0) {
@@ -327,7 +397,7 @@ function init_woocommerce_craftgate_gateway()
          */
         private function is_current_currency_supported()
         {
-            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR));
+            return in_array(get_woocommerce_currency(), array(\Craftgate\Model\Currency::TL, \Craftgate\Model\Currency::USD, \Craftgate\Model\Currency::EUR, \Craftgate\Model\Currency::GBP));
         }
 
         /**
@@ -614,4 +684,28 @@ function deactivate_craftgate_plugin()
     delete_option('woocommerce_craftgate_gateway_settings');
 }
 
+/**
+ * Activate plugin.
+ */
+function activate_craftgate_plugin()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'craftgate_card';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+                craftgate_card_id INT(11) NOT NULL AUTO_INCREMENT,
+                customer_id INT(11) NOT NULL,
+                card_user_key varchar(255) NOT NULL,
+                api_key varchar(50) NOT NULL,
+                created_at  TIMESTAMP DEFAULT current_timestamp,
+               PRIMARY KEY (craftgate_card_id)
+            ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
 register_deactivation_hook(__FILE__, 'deactivate_craftgate_plugin');
+register_activation_hook(__FILE__, 'activate_craftgate_plugin');
