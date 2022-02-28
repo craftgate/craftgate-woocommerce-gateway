@@ -5,7 +5,7 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires at least: 4.4
  * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
@@ -187,6 +187,7 @@ function init_woocommerce_craftgate_gateway()
                 $order = $this->retrieve_order($order_id);
                 $GLOBALS["cg-lang-header"] = $this->get_option("language");
                 $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result(wc_clean($_POST["token"]));
+
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
                 $this->update_order_checkout_form_result_metadata($order, $checkout_form_result);
 
@@ -370,7 +371,7 @@ function init_woocommerce_craftgate_gateway()
         {
             $order = $this->retrieve_order($order_id);
             $customer_id = $order->get_user()->ID;
-            return array(
+            $init_checkout_form_request = array(
                 'price' => $this->format_price($order->get_total()),
                 'paidPrice' => $this->format_price($order->get_total()),
                 'currency' => $order->get_currency(),
@@ -381,6 +382,12 @@ function init_woocommerce_craftgate_gateway()
                 'disableStoreCard' => $customer_id == null,
                 'items' => $this->build_items($order),
             );
+            if ($order->get_billing_email() && strlen(trim($order->get_billing_email())) > 0) {
+                $init_checkout_form_request['additionalParams'] = array(
+                    'buyerEmail' => $order->get_billing_email()
+                );
+            }
+            return $init_checkout_form_request;
         }
 
         /**
