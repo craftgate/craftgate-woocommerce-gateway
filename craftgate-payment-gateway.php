@@ -5,7 +5,7 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.4
+ * Version: 1.0.5
  * Requires at least: 4.4
  * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
@@ -137,6 +137,7 @@ function init_woocommerce_craftgate_gateway()
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
             add_action('woocommerce_receipt_craftgate_gateway', array($this, 'init_craftgate_checkout_form'));
             add_action('woocommerce_api_craftgate_gateway_callback', array($this, 'handle_craftgate_checkout_form_result'));
+            add_action('woocommerce_api_craftgate_gateway_webhook', array($this, 'handle_craftgate_webhook_result'));
         }
 
         /**
@@ -176,38 +177,120 @@ function init_woocommerce_craftgate_gateway()
         }
 
         /**
+         * Check payment is processed before
+         */
+        private function is_payment_processed_before($checkout_token)
+        {
+            $orders = wc_get_orders(array(
+                'limit' => -1,
+                'meta_key' => 'craftgate_checkout_token',
+                'meta_value' => $checkout_token,
+                'meta_compare' => '=',
+                'return' => 'objects'
+            ));
+
+            foreach ($orders as $order) {
+                if (!in_array($order->get_status(), ['failed', 'pending'])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Decide whether process webhook request and return checkout token
+         */
+        private function should_process_webhook_request($webhook_data)
+        {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                return false;
+            }
+
+            $event_type = wc_clean($webhook_data['eventType']);
+            $status = wc_clean($webhook_data['status']);
+            $checkout_token = wc_clean($webhook_data['payloadId']);
+
+            if ($event_type !== 'CHECKOUTFORM_AUTH' || $status !== "SUCCESS" || !isset($checkout_token) || $this->is_payment_processed_before($checkout_token)) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Handles Craftgate webhook result.
+         */
+        public function handle_craftgate_webhook_result()
+        {
+            $webhook_data = json_decode(file_get_contents('php://input'), true);
+            if (!isset($webhook_data) || !$this->should_process_webhook_request($webhook_data)) {
+                exit();
+            }
+
+            $checkout_token = wc_clean($webhook_data['payloadId']);;
+            $checkout_form_result = $this->retrieve_checkout_form_result($checkout_token);
+            if ($checkout_form_result->paymentStatus !== 'SUCCESS') {
+                exit();
+            }
+
+            $conversationId = $checkout_form_result->conversationId;
+            if (!isset($conversationId)) {
+                exit();
+            }
+            $order = $this->retrieve_order($conversationId);
+            $this->update_order_checkout_form_result_metadata($order, $checkout_form_result, $checkout_token);
+            $this->complete_order_for_success_payment($checkout_form_result, $order);
+            exit();
+        }
+
+        /**
+         * Completes order for success payment.
+         */
+        private function complete_order_for_success_payment($checkout_form_result, $order)
+        {
+            global $woocommerce;
+            if ($order->get_status() !== 'pending' && $order->get_status() !== 'failed') {
+                return;
+            }
+
+            if ($checkout_form_result->installment > 1) {
+                $this->update_order_for_installment($order, $checkout_form_result);
+            }
+
+            $customer_id = $order->get_user()->ID;
+            if (isset($checkout_form_result->cardUserKey) && $this->retrieve_card_user_key($customer_id, $this->api_key) != $checkout_form_result->cardUserKey) {
+                $this->save_card_user_key($customer_id, $checkout_form_result->cardUserKey, $this->api_key);
+            }
+
+            $order->payment_complete();
+            $orderMessage = 'Payment ID: ' . $checkout_form_result->id;
+            $order->add_order_note($orderMessage, 0, true);
+            WC()->cart->empty_cart();
+            $woocommerce->cart->empty_cart();
+            wc_empty_cart();
+        }
+
+        /**
          * Handles Craftgate checkout result.
          */
         public function handle_craftgate_checkout_form_result()
         {
             try {
-                global $woocommerce;
                 $this->validate_handle_checkout_form_result_params();
                 $order_id = wc_clean($_GET["order_id"]);
                 $order = $this->retrieve_order($order_id);
-                $GLOBALS["cg-lang-header"] = $this->get_option("language");
-                $checkout_form_result = $this->craftgate_api->retrieve_checkout_form_result(wc_clean($_POST["token"]));
+                if ($order->get_status() == 'processing') {
+                    echo "<script>window.top.location.href = '" . $this->get_return_url($order) . "';</script>";
+                    exit;
+                }
 
+                $checkout_token = wc_clean($_POST["token"]);
+                $checkout_form_result = $this->retrieve_checkout_form_result($checkout_token);
                 $this->validate_order_id_equals_conversation_id($checkout_form_result, $order_id);
-                $this->update_order_checkout_form_result_metadata($order, $checkout_form_result);
+                $this->update_order_checkout_form_result_metadata($order, $checkout_form_result, $checkout_token);
 
                 // Checks payment error.
                 if (!isset($checkout_form_result->paymentError) && $checkout_form_result->paymentStatus === 'SUCCESS') {
-                    if ($checkout_form_result->installment > 1) {
-                        $this->update_order_for_installment($order, $checkout_form_result);
-                    }
-
-                    $customer_id = $order->get_user()->ID;
-                    if (isset($checkout_form_result->cardUserKey) && $this->retrieve_card_user_key($customer_id, $this->api_key) != $checkout_form_result->cardUserKey) {
-                        $this->save_card_user_key($customer_id, $checkout_form_result->cardUserKey, $this->api_key);
-                    }
-
-                    $order->payment_complete();
-                    $orderMessage = 'Payment ID: ' . $checkout_form_result->id;
-                    $order->add_order_note($orderMessage, 0, true);
-                    WC()->cart->empty_cart();
-                    $woocommerce->cart->empty_cart();
-                    wc_empty_cart();
+                    $this->complete_order_for_success_payment($checkout_form_result, $order);
                     echo "<script>window.top.location.href = '" . $this->get_return_url($order) . "';</script>";
                 } else {
                     $error = $checkout_form_result->paymentError->errorCode . ' - ' . $checkout_form_result->paymentError->errorDescription . ' - ' . $checkout_form_result->paymentError->errorGroup;
@@ -215,18 +298,22 @@ function init_woocommerce_craftgate_gateway()
                     $order->update_status('failed', $error);
                     $order->save();
                     wc_add_notice(__($checkout_form_result->paymentError->errorDescription, $this->text_domain), 'error');
-                    $redirectUrl = wc_get_checkout_url();
-                    echo "<script>window.top.location.href = '" . $redirectUrl . "';</script>";
+                    echo "<script>window.top.location.href = '" . wc_get_checkout_url() . "';</script>";
                 }
 
                 exit;
             } catch (Exception $e) {
                 error_log($e->getMessage());
                 wc_add_notice(__($e->getMessage(), $this->text_domain), 'error');
-                $redirectUrl = wc_get_checkout_url();
-                echo "<script>window.top.location.href = '" . $redirectUrl . "';</script>";
+                echo "<script>window.top.location.href = '" . wc_get_checkout_url() . "';</script>";
                 $this->render_error_message(__('An error occurred. Error Code: ', $this->text_domain) . '-2');
             }
+        }
+
+        private function retrieve_checkout_form_result($checkout_token)
+        {
+            $GLOBALS["cg-lang-header"] = $this->get_option("language");
+            return $this->craftgate_api->retrieve_checkout_form_result($checkout_token);
         }
 
         /**
@@ -446,11 +533,12 @@ function init_woocommerce_craftgate_gateway()
          * @param $order object WooCommerce order
          * @param $checkout_form_result object Checkout Form result
          */
-        private function update_order_checkout_form_result_metadata($order, $checkout_form_result)
+        private function update_order_checkout_form_result_metadata($order, $checkout_form_result, $checkout_token)
         {
             if (isset($checkout_form_result->id)) {
                 $order->update_meta_data('environment', $this->is_sandbox_active ? 'sandbox' : 'live');
                 $order->update_meta_data('craftgate_payment_id', $checkout_form_result->id);
+                $order->update_meta_data('craftgate_checkout_token', $checkout_token);
             }
             $order->save();
         }
@@ -560,6 +648,13 @@ function init_woocommerce_craftgate_gateway()
                     'type' => 'text',
                     'description' => __('Example: hideFooter=true&animatedCard=true', $this->text_domain),
                     'default' => '',
+                ),
+                'webhook_url' => array(
+                    'title' => __('Webhook URL', $this->text_domain),
+                    'type' => 'text',
+                    'disabled' => true,
+                    'description' => __('The URL that payment results will be sent to on the server-side. You should enter this webhook address to Craftgate Merchant Panel to get webhook request. You can see details <a href="https://developer.craftgate.io/webhook">here</a>.', $this->text_domain),
+                    'default' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_webhook",
                 ),
             );
         }
