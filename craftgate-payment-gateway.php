@@ -222,7 +222,7 @@ function init_woocommerce_craftgate_gateway()
         public function handle_craftgate_webhook_result()
         {
             $webhook_data = json_decode(file_get_contents('php://input'), true);
-            if (!$this->should_process_webhook_request($webhook_data)) {
+            if (!isset($webhook_data) || !$this->should_process_webhook_request($webhook_data)) {
                 exit();
             }
 
