@@ -4,7 +4,7 @@ Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos,
 Requires at least: 4.4
 Tested up to: 5.8.3
 Requires PHP: 5.6
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,6 +50,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.5 - 2022-04-20 =
+* adds webhook feature to determine unhandled payments on client side
+
 = 1.0.4 - 2022-02-28 =
 * adds card storage functionality
 * adds shipping total to payment items
@@ -72,6 +75,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * First Release
 
 == Upgrade Notice ==
+= 1.0.5 - 2022-04-20 =
+* adds webhook feature to determine unhandled payments on client side
+
 = 1.0.4 - 2022-02-28 =
 * adds card storage functionality
 * adds shipping total to payment items
