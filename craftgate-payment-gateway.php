@@ -458,15 +458,20 @@ function init_woocommerce_craftgate_gateway()
         {
             $order = $this->retrieve_order($order_id);
             $customer_id = $order->get_user()->ID;
+            $items = $this->build_items($order);
+            $total_price = 0;
+            foreach ($items as $item) {
+                $total_price += $item['price'];
+            }
             $init_checkout_form_request = array(
-                'price' => $this->format_price($order->get_total()),
+                'price' => $this->format_price($total_price),
                 'paidPrice' => $this->format_price($order->get_total()),
                 'currency' => $order->get_currency(),
                 'paymentGroup' => \Craftgate\Model\PaymentGroup::LISTING_OR_SUBSCRIPTION,
                 'conversationId' => $order_id,
                 'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'disableStoreCard' => $customer_id == null,
-                'items' => $this->build_items($order),
+                'items' => $items,
             );
 
             $card_user_key = $this->retrieve_card_user_key($customer_id, $this->api_key);
