@@ -5,7 +5,7 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.5
+ * Version: 1.0.6
  * Requires at least: 4.4
  * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
