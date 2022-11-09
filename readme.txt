@@ -2,9 +2,9 @@
 Contributors: craftgateio
 Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos, pazaryeri, cüzdan, ödeme formu
 Requires at least: 4.4
-Tested up to: 5.8.3
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,6 +50,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.7 - 2022-11-09 =
+* updates wordpress and woocommerce versions
+
 = 1.0.6 - 2022-07-08 =
 * sends sum of items price in price field instead of sending order total
 
@@ -78,6 +81,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * First Release
 
 == Upgrade Notice ==
+= 1.0.7 - 2022-11-09 =
+* updates wordpress and woocommerce versions
+
 = 1.0.6 - 2022-07-08 =
 * sends sum of items price in price field instead of sending order total
 
