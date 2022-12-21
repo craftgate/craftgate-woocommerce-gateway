@@ -11,7 +11,20 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Craftgate ödeme geçidini kullanarak WooCommerce üzerinden kolayca ödeme almanızı sağlayan teknik entegrasyon.
 
 == Description ==
-Craftgate, bulut tabanlı ödeme geçidi ile işletmenize ait tüm bankaların Sanal POSlarını tek merkezden kolayca entegre edebilir, kart saklama, tek tıkla ödeme, pazaryeri çözümü, kapalı devre cüzdan, ödeme formu, ortak ödeme sayfası, gelişmiş üye işyeri kontrol paneli, gelişmiş API gibi birçok katma değerli servisten hızlı bir şekilde yararlanabilirsiniz. Böylece, maliyetlerinizi düşürürken, siz asıl işinizi büyütmeye odaklanabilirsiniz.
+Craftgate Nedir?
+
+Craftgate, işletmenize ait tüm bankaların Sanal POSlarını, birçok ödeme ve e-para kuruluşunu, alternatif ödeme yöntemleri ve yurt dışı ödeme yöntemlerini tek merkezden yönetebileceğiniz ‘One-Stop Shop’ ödeme geçididir.
+
+Craftgate ile işletmeniz için dilediğiniz banka, birçok ödeme ve e-para kuruluşunun yanı sıra yurt dışı ödeme kuruluşlarıyla çalışabilirsiniz. Sahip olduğunuz sanal POS'ları ve anlaşmalı olduğunuz ödeme kuruluşlarını tek tuşla sisteminize entegre edebilirsiniz.
+
+Neden Craftgate Ödeme Geçidi'ni Kullanmalısınız?
+
+Craftgate sayesinde birçok katma değerli servisten hızlı bir
+şekilde yararlanabilirsiniz. Böylece, müşterilerinize daha iyi bir ödeme deneyimi sunabilir, katma değerli Craftgate çözümleri ile ödeme kaynaklı giderlerinizi düşürür, olası gelir kaybınızı azaltır ve asıl işinizi büyütmeye odaklanabilirsiniz.
+
+İşletmenize Craftgate modülünü entegre ederek ödeme dönüşüm oranınızı artırmaya başlayın!
+
+Craftgate, one-stop shop ödeme geçidi ile işletmenize ait tüm bankaların Sanal POSlarını tek merkezden kolayca entegre edebilir, kart saklama, tek tıkla ödeme, pazaryeri çözümü, kapalı devre cüzdan, ödeme formu, ortak ödeme sayfası, gelişmiş üye işyeri kontrol paneli, gelişmiş API gibi birçok katma değerli servisten hızlı bir şekilde yararlanabilirsiniz. Böylece, maliyetlerinizi düşürürken, siz asıl işinizi büyütmeye odaklanabilirsiniz.
 
 = Craftgate ile çalışmaya nasıl başlayabilirim? =
 1. [craftgate.io](https://craftgate.io) sayfamızdan Kayıt Ol butonuna tıklayınız.
