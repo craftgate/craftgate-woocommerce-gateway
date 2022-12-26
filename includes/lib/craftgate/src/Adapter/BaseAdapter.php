@@ -55,7 +55,7 @@ class BaseAdapter
             'content-type: application/json'
         );
 
-        if ($GLOBALS["cg-lang-header"]) {
+        if (isset($GLOBALS["cg-lang-header"])) {
             $headers[] = 'lang: ' . $GLOBALS["cg-lang-header"];
         }
 
