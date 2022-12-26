@@ -380,7 +380,7 @@ function init_woocommerce_craftgate_gateway()
             );
 
             $result = $wpdb->get_col($query);
-            if ($result[0]) {
+            if (isset($result[0])) {
                 return $result[0];
             } else {
                 return null;
