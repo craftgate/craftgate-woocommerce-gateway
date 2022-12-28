@@ -97,6 +97,9 @@ Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmekt
 * First Release
 
 == Upgrade Notice ==
+= 1.0.8 - 2026-12-26 =
+* Add additional checks for nullable fields
+
 = 1.0.7 - 2022-11-09 =
 * updates wordpress and woocommerce versions
 
