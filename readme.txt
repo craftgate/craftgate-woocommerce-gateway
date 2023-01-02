@@ -11,40 +11,45 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Craftgate ödeme geçidini kullanarak WooCommerce üzerinden kolayca ödeme almanızı sağlayan teknik entegrasyon.
 
 == Description ==
-Craftgate Nedir?
+= Craftgate Nedir? =
 
-Craftgate, işletmenize ait tüm bankaların Sanal POSlarını, birçok ödeme ve e-para kuruluşunu, alternatif ödeme yöntemleri ve yurt dışı ödeme yöntemlerini tek merkezden yönetebileceğiniz ‘One-Stop Shop’ ödeme geçididir.
+Craftgate, işletmenizin online ödeme süreçlerini tek noktadan yönetebileceğiniz, tüm bankaların sanal POS’larını, birçok ödeme/e-para kuruluşunu, alternatif ve yurtdışı ödeme yöntemlerini sisteminize entegre etmenizi sağlayan bir ödeme geçididir.
 
-Craftgate ile işletmeniz için dilediğiniz banka, birçok ödeme ve e-para kuruluşunun yanı sıra yurt dışı ödeme kuruluşlarıyla çalışabilirsiniz. Sahip olduğunuz sanal POS'ları ve anlaşmalı olduğunuz ödeme kuruluşlarını tek tuşla sisteminize entegre edebilirsiniz.
+= Hangi İşletmeler Craftgate Ödeme Geçidini Kullanabilir? =
 
-Neden Craftgate Ödeme Geçidi'ni Kullanmalısınız?
+Online ödeme alan ve en az bir sanal POS’a sahip olan her işletme, üyelik süreçlerini tamamlamalarının ardından, Craftgate’i kullanmaya başlayabilirler. 
 
-Craftgate sayesinde birçok katma değerli servisten hızlı bir
-şekilde yararlanabilirsiniz. Böylece, müşterilerinize daha iyi bir ödeme deneyimi sunabilir, katma değerli Craftgate çözümleri ile ödeme kaynaklı giderlerinizi düşürür, olası gelir kaybınızı azaltır ve asıl işinizi büyütmeye odaklanabilirsiniz.
+= Neden Craftgate Ödeme Geçidini Kullanmalısınız? =
 
-İşletmenize Craftgate modülünü entegre ederek ödeme dönüşüm oranınızı artırmaya başlayın!
+* Craftgate ödeme geçidi ile dilediğiniz banka, ödeme/e-para kuruluşu ile çalışma imkanı elde edersiniz. Ayrıca, alternatif ödeme yöntemlerini veya yurt dışı ödeme kuruluşlarını da sisteminize kolayca dahil edebilirsiniz. Bunun için, ilgili banka ve kuruluşlar ile anlaşma yapmış olmanız yeterlidir. 
+* Craftgate ödeme geçidi ile tüm online ödeme süreçlerinizi tek merkezden yönetirsiniz. 
+* Craftgate ödeme geçidinin kart saklama, kapalı devre cüzdan, limit birleştirme gibi birçok katma değerli servisinden yararlanarak, işletmenizin ödeme başarı oranlarını artırır, müşterilerinize akıcı bir ödeme deneyimi yaşatırsınız. 
+* Craftgate’in 20’den fazla katma değerli servisi ile işletmenizin ödeme süreçlerinden kaynaklı giderlerini azaltır, ciro kayıplarını engellersiniz. 
 
-Craftgate, one-stop shop ödeme geçidi ile işletmenize ait tüm bankaların Sanal POSlarını tek merkezden kolayca entegre edebilir, kart saklama, tek tıkla ödeme, pazaryeri çözümü, kapalı devre cüzdan, ödeme formu, ortak ödeme sayfası, gelişmiş üye işyeri kontrol paneli, gelişmiş API gibi birçok katma değerli servisten hızlı bir şekilde yararlanabilirsiniz. Böylece, maliyetlerinizi düşürürken, siz asıl işinizi büyütmeye odaklanabilirsiniz.
+= Craftgate Ödeme Geçidini Kullanmaya Nasıl Başlayabilirsiniz? =
 
-= Craftgate ile çalışmaya nasıl başlayabilirim? =
-1. [craftgate.io](https://craftgate.io) sayfamızdan Kayıt Ol butonuna tıklayınız.
-1. Sizden istenilen bilgileri doldurup, belgeleri yükleyip, online olarak başvurunuz.
-1. Gelen dijital sözleşmeyi onaylayın ve Craftgate’i hemen kullanmaya başlayınız.
+WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak için öncelikle Craftgate üyelik süreçlerinizi tamamlamanız gerekir. 
+Üyelik işleminizi tamamlamak için aşağıdaki adımları izleyebilirsiniz: 
+
+1. [craftgate.io](https://craftgate.io) sayfamızdan "Hemen Başla" butonuna tıklayınız.
+1. Kayıt formunda sizden istenilen bilgileri doldurup, işletmenize ait belgeleri sistemimize yükleyiniz. 
+1. Tarafınıza gönderdiğimiz dijital sözleşmeyi onaylamanızın ardından, Craftgate üyeliğinizi tamamlamış olursunuz.
+
+Üyelik onayınızdan sonra [buradaki](https://developer.craftgate.io/hazir-eticaret-modulleri/woocommerce) adımları takip ederek WooCommerce eklentisi üzerinden Craftgate ödeme geçidini sisteminize dahil edebilirsiniz.
 
 = Ürün özellikleri =
-* Tüm bankalarla hazır Sanal POS entegrasyonu
-* Pazaryeri, alt üye işyeri ve para dağıtma modeli desteği
-* PCI-DSS-1 uyumlu kart saklama, tek tıkla ödeme ve abonelik çözümü
-* Kapalı devre cüzdan çözümü
-* Ödeme formu, ortak ödeme sayfası
-* Akıllı ve Dinamik Ödeme Yönlendirme Kuralları
-* Ödeme Tekrar Deneme
-* Gelişmiş Üye İşyeri kontrol paneli
-* Birçok programlama dilini kapsayan, kolay entegre edilebilir API
-* 2007 yılından bu yana bir çok tecrübe ve birikimle geliştirilmiş, ölçeklenebilir, 6. nesil platform
 
-= Gereksinimler =
-Craftgate kullanarak ödeme geçirebilmek için üyeliğinizin olması gerekmektedir.
+* Ödeme sistemleri alanında 16 yılı aşan tecrübe ve bilgi birikiminin yansıdığı ödeme geçidi ürünü
+* Banka sanal POS’ları, ödeme/e-para kuruluşları ile alternatif ödeme yöntemlerinin hazır teknik entegrasyonu
+* PCI-DSS-1 uyumlu kart saklama özelliği, tek tıkla ödeme, link ve QR kod ile ödeme yöntemi, kapalı devre cüzdan gibi 20’den fazla katma değerli servis
+* Pazaryeri, alt üye işyeri ve para dağıtma modeli desteği, ödeme formu, ortak ödeme sayfası gibi ödeme süreçlerini kolaylaştıran çözümler
+* Ödeme hatalarında veya sanal POS kesintilerinde dahi 7/24 ödeme almayı sağlayan Akıllı ve Dinamik Ödeme Yönlendirme, Ödeme Tekrar Deneme ve Autopilot gibi katma değerli servisler 
+* Gelişmiş ve kullanıcı dostu üye işyeri kontrol paneli
+* 8 farklı para biriminde ödeme almayı destekleyen teknik altyapı, 
+* Yurt dışından ödeme almak istenmesi halinde, anlaşma sağlanabilecek Stripe, Payoneer, AliPay, PayPal, Braintree, Afterpay ve Klarna gibi yurt dışı ödeme kuruluşlarına kolay teknik entegrasyon 
+* Birçok programlama dilini kapsayan, kolay entegre edilebilir API ve geliştirici portalı
+* Entegrasyon sürecinde veya daha sonra ihtiyaç duyulması halinde ürünü geliştiren mühendislerin kendisinden, hızlı ve etkin teknik destek imkanı
+
 
 == Installation ==
 * Craftgate WooCommerce eklentisini indirip Wordpress eklentiler sayfasından yükleyebilirsiniz. Ayrıca Wordpress eklenti arama sayfasına "craftgate" yazarak da eklentiyi yükleyebilirsiniz.
