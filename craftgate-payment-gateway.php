@@ -705,6 +705,10 @@ function init_woocommerce_craftgate_gateway()
 
             }
         }
+
+        public function get_icon_url() {
+            return $this->icon;
+        }
     }
 
     /**
@@ -770,6 +774,39 @@ function init_woocommerce_craftgate_gateway()
     }
 
     add_filter('plugin_action_links', 'craftgate_plugin_action_links', 10, 2);
+
+    /**
+     * Add blocks compatibility support
+     */
+    function add_blocks_compatibility_support()
+    {
+        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+        }
+    }
+
+    add_action('before_woocommerce_init', 'add_blocks_compatibility_support');
+
+    /**
+     * Register payment method type
+     */
+    function register_payment_method()
+    {
+        if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+            return;
+        }
+        require_once plugin_dir_path(__FILE__) . 'includes/blocks/class-wc-craftgate-blocks.php';
+
+        add_action(
+            'woocommerce_blocks_payment_method_type_registration',
+            function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
+                $payment_method_registry->register(new WC_Craftgate_Gateway_Blocks_Support());
+            }
+        );
+    }
+
+    // Hook the custom function to the 'woocommerce_blocks_loaded' action
+    add_action('woocommerce_blocks_loaded', 'register_payment_method');
 }
 
 /**
