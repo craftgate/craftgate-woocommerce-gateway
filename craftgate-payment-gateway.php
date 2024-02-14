@@ -657,7 +657,8 @@ function init_woocommerce_craftgate_gateway()
                 'webhook_url' => array(
                     'title' => __('Webhook URL', $this->text_domain),
                     'type' => 'text',
-                    'disabled' => true,
+                    'class' => 'disabled',
+                    'css' => 'pointer-events:none',
                     'description' => __('The URL that payment results will be sent to on the server-side. You should enter this webhook address to Craftgate Merchant Panel to get webhook request. You can see details <a href="https://developer.craftgate.io/webhook">here</a>.', $this->text_domain),
                     'default' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_webhook",
                 ),
