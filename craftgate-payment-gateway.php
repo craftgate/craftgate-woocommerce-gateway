@@ -5,11 +5,11 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.9
+ * Version: 1.0.10
  * Requires at least: 4.4
  * Tested up to: 6.0
  * WC requires at least: 3.0.0
- * WC tested up to: 7.0.0
+ * WC tested up to: 8.5.2
  * Requires PHP: 5.6
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -657,7 +657,8 @@ function init_woocommerce_craftgate_gateway()
                 'webhook_url' => array(
                     'title' => __('Webhook URL', $this->text_domain),
                     'type' => 'text',
-                    'disabled' => true,
+                    'class' => 'disabled',
+                    'css' => 'pointer-events:none',
                     'description' => __('The URL that payment results will be sent to on the server-side. You should enter this webhook address to Craftgate Merchant Panel to get webhook request. You can see details <a href="https://developer.craftgate.io/webhook">here</a>.', $this->text_domain),
                     'default' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_webhook",
                 ),
@@ -703,6 +704,10 @@ function init_woocommerce_craftgate_gateway()
                 ]);
 
             }
+        }
+
+        public function get_icon_url() {
+            return $this->icon;
         }
     }
 
@@ -769,6 +774,39 @@ function init_woocommerce_craftgate_gateway()
     }
 
     add_filter('plugin_action_links', 'craftgate_plugin_action_links', 10, 2);
+
+    /**
+     * Add blocks compatibility support
+     */
+    function add_blocks_compatibility_support()
+    {
+        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+        }
+    }
+
+    add_action('before_woocommerce_init', 'add_blocks_compatibility_support');
+
+    /**
+     * Register payment method type
+     */
+    function register_payment_method()
+    {
+        if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+            return;
+        }
+        require_once plugin_dir_path(__FILE__) . 'includes/blocks/class-wc-craftgate-blocks.php';
+
+        add_action(
+            'woocommerce_blocks_payment_method_type_registration',
+            function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
+                $payment_method_registry->register(new WC_Craftgate_Gateway_Blocks_Support());
+            }
+        );
+    }
+
+    // Hook the custom function to the 'woocommerce_blocks_loaded' action
+    add_action('woocommerce_blocks_loaded', 'register_payment_method');
 }
 
 /**
