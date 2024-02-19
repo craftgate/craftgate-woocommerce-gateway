@@ -108,6 +108,9 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 * First Release
 
 == Upgrade Notice ==
+= 1.0.10 - 2024-02-13 =
+* adds woocommerce checkout blocks support
+
 = 1.0.9 - 2023-01-02 =
 * updates readme.txt
 
