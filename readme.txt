@@ -4,7 +4,7 @@ Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos,
 Requires at least: 4.4
 Tested up to: 6.4.3
 Requires PHP: 5.6
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,6 +68,9 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.11 - 2024-03-19 =
+* adds woocommerce hpos support
+
 = 1.0.10 - 2024-02-13 =
 * adds woocommerce checkout blocks support
 
