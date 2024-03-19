@@ -5,11 +5,11 @@
  * Description: Accept debit/credit card payments easily and directly on your WordPress site using Craftgate.
  * Author: Craftgate
  * Author URI: https://craftgate.io/
- * Version: 1.0.10
+ * Version: 1.0.11
  * Requires at least: 4.4
  * Tested up to: 6.0
  * WC requires at least: 3.0.0
- * WC tested up to: 8.5.2
+ * WC tested up to: 8.6.1
  * Requires PHP: 5.6
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -360,8 +360,8 @@ function init_woocommerce_craftgate_gateway()
             $order_fee->tax_class = '';
             $order->add_fee($order_fee);
             $order->calculate_totals(true);
-            update_post_meta($order->id, 'craftgate_installment_number', esc_sql($installment));
-            update_post_meta($order->id, 'craftgate_installment_fee', $installment_fee);
+            $order->update_meta_data('craftgate_installment_number', esc_sql($installment));
+            $order->update_meta_data('craftgate_installment_fee', $installment_fee);
         }
 
         private function retrieve_card_user_key($customer_id, $api_key)
@@ -706,7 +706,8 @@ function init_woocommerce_craftgate_gateway()
             }
         }
 
-        public function get_icon_url() {
+        public function get_icon_url()
+        {
             return $this->icon;
         }
     }
@@ -785,7 +786,18 @@ function init_woocommerce_craftgate_gateway()
         }
     }
 
+    /**
+     * Add custom order tables compatibility support
+     */
+    function add_custom_order_tables_compatibility_support()
+    {
+        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+        }
+    }
+
     add_action('before_woocommerce_init', 'add_blocks_compatibility_support');
+    add_action('before_woocommerce_init', 'add_custom_order_tables_compatibility_support');
 
     /**
      * Register payment method type
