@@ -68,7 +68,7 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
-= 1.0.11 - 2024-03-19 =
+= 1.0.11 - 2024-03-20 =
 * adds woocommerce hpos support
 
 = 1.0.10 - 2024-02-13 =
@@ -111,6 +111,9 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 * First Release
 
 == Upgrade Notice ==
+= 1.0.11 - 2024-03-20 =
+* adds woocommerce hpos support
+
 = 1.0.10 - 2024-02-13 =
 * adds woocommerce checkout blocks support
 
