@@ -4,7 +4,7 @@ Tags: craftgate, payment gateway, ödeme geçidi, payment orchestration
 Requires at least: 4.4
 Tested up to: 6.4.3
 Requires PHP: 5.6
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
