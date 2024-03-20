@@ -1,6 +1,6 @@
 === Craftgate Payment Gateway ===
 Contributors: craftgateio
-Tags: craftgate, payment gateway, kredi kartı, banka kartı, ödeme, sanal pos, pazaryeri, cüzdan, ödeme formu
+Tags: craftgate, payment gateway, ödeme geçidi, payment orchestration
 Requires at least: 4.4
 Tested up to: 6.4.3
 Requires PHP: 5.6
@@ -68,6 +68,9 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.12 - 2024-03-20 =
+* updates wordpress tags
+
 = 1.0.11 - 2024-03-20 =
 * adds woocommerce hpos support
 
@@ -111,6 +114,9 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 * First Release
 
 == Upgrade Notice ==
+= 1.0.12 - 2024-03-20 =
+* updates wordpress tags
+
 = 1.0.11 - 2024-03-20 =
 * adds woocommerce hpos support
 
