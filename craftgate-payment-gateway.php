@@ -457,7 +457,7 @@ function init_woocommerce_craftgate_gateway()
         private function build_init_checkout_form_request($order_id)
         {
             $order = $this->retrieve_order($order_id);
-            $customer_id = $order->get_user()->ID;
+            $customer_id = $order->get_user() ? $order->get_user()->ID : null;
             $items = $this->build_items($order);
             $total_price = 0;
             foreach ($items as $item) {
@@ -472,6 +472,7 @@ function init_woocommerce_craftgate_gateway()
                 'callbackUrl' => rtrim(get_bloginfo('url'), '/') . '/' . "?wc-api=craftgate_gateway_callback&order_id=" . $order_id,
                 'disableStoreCard' => $customer_id == null,
                 'items' => $items,
+                'additionalParams' => array()
             );
 
             $card_user_key = $this->retrieve_card_user_key($customer_id, $this->api_key);
@@ -480,11 +481,33 @@ function init_woocommerce_craftgate_gateway()
             }
 
             if ($order->get_billing_email() && strlen(trim($order->get_billing_email())) > 0) {
-                $init_checkout_form_request['additionalParams'] = array(
-                    'buyerEmail' => $order->get_billing_email()
-                );
+                $init_checkout_form_request['additionalParams']['buyerEmail'] = $order->get_billing_email();
             }
+
+            $customer_identifier = $this->retrieve_customer_identifier($order);
+            if ($customer_identifier != null) {
+                $init_checkout_form_request['additionalParams']['customerIdentifier'] = $customer_identifier;
+            }
+
             return $init_checkout_form_request;
+        }
+
+        private function retrieve_customer_identifier($order)
+        {
+            $billing_phone = $order->get_billing_phone();
+            $billing_email = $order->get_billing_email();
+            $user = $order->get_user();
+            $user_email = $user ? $user->user_email : null;
+
+            if (!empty($billing_phone)) {
+                return $billing_phone;
+            } elseif (!empty($billing_email)) {
+                return $billing_email;
+            } elseif (!empty($user_email)) {
+                return $user_email;
+            }
+
+            return null;
         }
 
         /**
