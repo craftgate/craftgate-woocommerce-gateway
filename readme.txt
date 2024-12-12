@@ -4,7 +4,7 @@ Tags: craftgate, payment gateway, ödeme geçidi, payment orchestration
 Requires at least: 4.4
 Tested up to: 6.4.3
 Requires PHP: 5.6
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,6 +68,11 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 6. Sipariş Yönetim Sayfası
 
 == Changelog ==
+= 1.0.13 - 2024-12-12 =
+* adds customerIdentifier to checkout form request to offer customer related payment methods
+* adds spanish language support
+
+
 = 1.0.12 - 2024-03-20 =
 * updates wordpress tags
 
