@@ -98,9 +98,8 @@ function init_woocommerce_craftgate_gateway()
             // Inits admin field and settings.
             $this->init_admin_settings_form_fields();
             $this->init_settings();
-
-            $this->title = $this->get_option('title');
-            $this->description = $this->get_option('description');
+            $this->title = !empty($this->get_option('title')) ? $this->get_option('title') : __('Pay with Debit/Credit Card', $this->text_domain);
+            $this->description = !empty($this->get_option('description')) ? $this->get_option('description') : __('You can pay with Debit and Credit Card', $this->text_domain);
 
             // Inits api fields.
             $this->init_craftgate_api();
@@ -151,11 +150,14 @@ function init_woocommerce_craftgate_gateway()
                 $this->set_cookie_same_site();
                 $request = $this->build_init_checkout_form_request($order_id);
                 $response = $this->craftgate_api->init_checkout_form($request);
-
                 if (isset($response->pageUrl)) {
-                    $language = $this->get_option("language");
+                    $siteLanguage = explode('_', get_locale())[0];
+                    $optionLanguage = $this->get_option("language");
+                    $lang = !empty($optionLanguage) ? $optionLanguage : $siteLanguage;
                     $iframeOptions = $this->get_option("iframe_options");
-                    echo '<div id="craftgate_payment_form"><iframe src="' . $response->pageUrl . '&iframe=true&lang=' . $language . '&' . $iframeOptions . '"></iframe></div>';
+                    $iframeUrl = $response->pageUrl . '&iframe=true&' . $iframeOptions . '&lang=' . $lang;;
+
+                    echo '<div id="craftgate_payment_form"><iframe src="' . $iframeUrl . '"></iframe></div>';
                     ?>
                     <script>
                         window.addEventListener("message", function (event) {
@@ -598,7 +600,7 @@ function init_woocommerce_craftgate_gateway()
                 </p>
                 <div class="inline error">
                     <p>
-                        <strong><?php _e('Craftgate Payment Gateway is not available to use', $this->text_domain) ?></strong>: <?php _e('The only supported currency is TRY.', $this->text_domain) ?>
+                        <strong><?php _e('Craftgate Payment Gateway is not available to use', $this->text_domain) ?></strong>: <?php _e('Currency is not supported.', $this->text_domain) ?>
                     </p>
                 </div>
             <?php }
@@ -622,13 +624,15 @@ function init_woocommerce_craftgate_gateway()
                     'type' => 'text',
                     'description' => __('This controls the title which the user sees during checkout.', $this->text_domain),
                     'desc_tip' => false,
-                    'default' => __('Pay with Debit/Credit Card', $this->text_domain),
+                    'placeholder' => __('Pay with Debit/Credit Card', $this->text_domain),
+                    'default' => null,
                 ),
                 'description' => array(
                     'title' => __('Description', $this->text_domain),
                     'type' => 'textarea',
                     'description' => __('This controls the description which the user sees during checkout.', $this->text_domain),
-                    'default' => __('You can pay with Debit and Credit Card', $this->text_domain),
+                    'placeholder' => __('You can pay with Debit and Credit Card', $this->text_domain),
+                    'default' => null,
                 ),
                 'live_api_key' => array(
                     'title' => __('Live API Key', $this->text_domain),
@@ -665,11 +669,13 @@ function init_woocommerce_craftgate_gateway()
                     'title' => __('Language', $this->text_domain),
                     'type' => 'select',
                     'options' => array(
-                        'tr' => 'Turkish',
-                        'en' => 'English',
+                        null => __('Site Language', $this->text_domain),
+                        'tr' => __('Turkish', $this->text_domain),
+                        'en' => __('English', $this->text_domain),
+                        'es' => __('Spanish', $this->text_domain),
                     ),
                     'description' => __('Change the language of payment form.', $this->text_domain),
-                    'default' => 'tr',
+                    'default' => null,
                 ),
                 'iframe_options' => array(
                     'title' => __('Iframe Options', $this->text_domain),
