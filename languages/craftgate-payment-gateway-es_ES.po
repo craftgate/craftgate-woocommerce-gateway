@@ -1,0 +1,197 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2024-12-12 15:59+0300\n"
+"PO-Revision-Date: 2024-12-12 16:19+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: _;__;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: includes\n"
+
+#: craftgate-payment-gateway.php:95
+msgid ""
+"Accept debit/credit card payments easily and directly on your WordPress site "
+"using Craftgate."
+msgstr ""
+"Acepte pagos con tarjeta de débito/crédito fácil y directamente en su sitio "
+"WordPress utilizando Craftgate."
+
+#: craftgate-payment-gateway.php:96 craftgate-payment-gateway.php:628
+msgid "Pay with Debit/Credit Card"
+msgstr "Pagar con tarjeta de débito/crédito"
+
+#: craftgate-payment-gateway.php:174 craftgate-payment-gateway.php:178
+#: craftgate-payment-gateway.php:312
+msgid "An error occurred. Error Code: "
+msgstr "Se ha producido un error. Código de error: "
+
+#: craftgate-payment-gateway.php:358
+msgid "Installment Fee"
+msgstr "Cuota"
+
+#: craftgate-payment-gateway.php:447
+msgid "Shipping Total"
+msgstr "Total envío"
+
+#: craftgate-payment-gateway.php:544 craftgate-payment-gateway.php:557
+msgid "Your payment could not be processed."
+msgstr "Su pago no ha podido ser procesado."
+
+#: craftgate-payment-gateway.php:600
+msgid ""
+"You can create your Craftgate Payment Gateway account <a href=\"https://"
+"craftgate.io/\" target=\"_blank\"> here</a>."
+msgstr ""
+"Puede crear su cuenta de Craftgate Payment Gateway <a href=“https://"
+"craftgate.io/“ target=“_blank”>aquí</a>."
+
+#: craftgate-payment-gateway.php:604
+msgid "Craftgate Payment Gateway is not available to use"
+msgstr "Craftgate Payment Gateway no está disponible para su uso"
+
+#: craftgate-payment-gateway.php:604
+msgid "Currency is not supported."
+msgstr "No se admiten divisas."
+
+#: craftgate-payment-gateway.php:617
+msgid "Enable/Disable"
+msgstr "Activar/Desactivar"
+
+#: craftgate-payment-gateway.php:619
+msgid "Enable Craftgate"
+msgstr "Activar Craftgate"
+
+#: craftgate-payment-gateway.php:620
+msgid "Enable or disable the gateway."
+msgstr "Activa o desactiva la pasarela."
+
+#: craftgate-payment-gateway.php:624
+msgid "Title"
+msgstr "Título"
+
+#: craftgate-payment-gateway.php:626
+msgid "This controls the title which the user sees during checkout."
+msgstr "Esto controla el título que el usuario ve durante el pago."
+
+#: craftgate-payment-gateway.php:631
+msgid "Description"
+msgstr "Descripción"
+
+#: craftgate-payment-gateway.php:633
+msgid "This controls the description which the user sees during checkout."
+msgstr "Esto controla la descripción que el usuario ve durante el pago."
+
+#: craftgate-payment-gateway.php:634
+msgid "You can pay with Debit and Credit Card"
+msgstr "Puede pagar con tarjeta de débito y crédito"
+
+#: craftgate-payment-gateway.php:637
+msgid "Live API Key"
+msgstr "Clave API Live"
+
+#: craftgate-payment-gateway.php:639
+msgid "Enter your Live API Key."
+msgstr "Introduzca su clave Live API."
+
+#: craftgate-payment-gateway.php:643
+msgid "Live Secret Key"
+msgstr "Clave secreta en directo"
+
+#: craftgate-payment-gateway.php:645
+msgid "Enter your Live Secret Key."
+msgstr "Introduzca su clave secreta Live."
+
+#: craftgate-payment-gateway.php:649
+msgid "Sandbox API Key"
+msgstr "Clave API Sandbox"
+
+#: craftgate-payment-gateway.php:651
+msgid "Enter your Sandbox API Key."
+msgstr "Introduzca su clave API del Sandbox."
+
+#: craftgate-payment-gateway.php:655
+msgid "Sandbox Secret Key"
+msgstr "Clave secreta del Sandbox"
+
+#: craftgate-payment-gateway.php:657
+msgid "Enter your Sandbox Secret Key."
+msgstr "Introduzca su Clave Secreta del Sandbox."
+
+#: craftgate-payment-gateway.php:661
+msgid "Sandbox Mode"
+msgstr "Modo Sandbox"
+
+#: craftgate-payment-gateway.php:663
+msgid "Enable Sandbox Mode"
+msgstr "Activar el modo Sandbox"
+
+#: craftgate-payment-gateway.php:665
+msgid "Enable test mode using sandbox API keys."
+msgstr "Habilitar el modo de prueba utilizando claves API sandbox."
+
+#: craftgate-payment-gateway.php:668
+msgid "Language"
+msgstr "Idioma"
+
+#: craftgate-payment-gateway.php:671
+msgid "Site Language"
+msgstr "Idioma del sitio"
+
+#: craftgate-payment-gateway.php:672
+msgid "Turkish"
+msgstr "Turco"
+
+#: craftgate-payment-gateway.php:673
+msgid "English"
+msgstr "Inglés"
+
+#: craftgate-payment-gateway.php:674
+msgid "Spanish"
+msgstr "Español"
+
+#: craftgate-payment-gateway.php:676
+msgid "Change the language of payment form."
+msgstr "Cambiar el idioma del formulario de pago."
+
+#: craftgate-payment-gateway.php:680
+msgid "Iframe Options"
+msgstr "Opciones de iframe"
+
+#: craftgate-payment-gateway.php:682
+msgid "Example: hideFooter=true&animatedCard=true"
+msgstr "Ejemplo: hideFooter=true&animatedCard=true"
+
+#: craftgate-payment-gateway.php:686
+msgid "Webhook URL"
+msgstr "URL del webhook"
+
+#: craftgate-payment-gateway.php:690
+msgid ""
+"The URL that payment results will be sent to on the server-side. You should "
+"enter this webhook address to Craftgate Merchant Panel to get webhook "
+"request. You can see details <a href=\"https://developer.craftgate.io/"
+"webhook\">here</a>."
+msgstr ""
+"The URL that payment results will be sent to on the server-side. You should "
+"enter this webhook address to Craftgate Merchant Panel to get webhook "
+"request. You can see details <a href=“https://developer.craftgate.io/"
+"webhook”>here</a>."
+
+#: craftgate-payment-gateway.php:766
+msgid "Craftgate Payment URL"
+msgstr "URL de pago Craftgate"
+
+#: craftgate-payment-gateway.php:799
+msgid "Settings"
+msgstr "Ajustes"
+
+#~ msgid "Gateway Testing"
+#~ msgstr "Craftgate Test Modu"
