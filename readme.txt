@@ -72,7 +72,6 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 * adds customerIdentifier to checkout form request to offer customer related payment methods
 * adds spanish language support
 
-
 = 1.0.12 - 2024-03-20 =
 * updates wordpress tags
 
@@ -119,6 +118,10 @@ WooCommerce eklentisi üzerinden Craftgate ödeme geçidini kullanmaya başlamak
 * First Release
 
 == Upgrade Notice ==
+= 1.0.13 - 2024-12-12 =
+* adds customerIdentifier to checkout form request to offer customer related payment methods
+* adds spanish language support
+
 = 1.0.12 - 2024-03-20 =
 * updates wordpress tags
 
